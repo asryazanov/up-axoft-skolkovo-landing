@@ -12,7 +12,6 @@ type Props = {
 };
 
 type FormState = {
-  type: "startup" | "vendor";
   company: string;
   email: string;
   industry: string;
@@ -21,7 +20,6 @@ type FormState = {
 };
 
 const initialState: FormState = {
-  type: "startup",
   company: "",
   email: "",
   industry: "",
@@ -63,23 +61,6 @@ export function ApplyForm({ industries }: Props) {
 
   return (
     <form className="apply-form" onSubmit={submit}>
-      <div className="segmented" aria-label="Тип участника">
-        <button
-          type="button"
-          className={form.type === "startup" ? "active" : ""}
-          onClick={() => update("type", "startup")}
-        >
-          Стартап
-        </button>
-        <button
-          type="button"
-          className={form.type === "vendor" ? "active" : ""}
-          onClick={() => update("type", "vendor")}
-        >
-          Вендор
-        </button>
-      </div>
-
       <label>
         <span>Название компании</span>
         <input

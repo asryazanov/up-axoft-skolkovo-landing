@@ -80,12 +80,14 @@ export function LandingPage() {
           <p className="eyebrow">О программе</p>
           <h2>Чем UP отличается от обычного акселератора</h2>
         </div>
-        <p>
-          Большинство акселераторов заканчиваются питчем и сертификатом.
-          UP — это структурированный путь до реальных продаж.
-          Axoft подключает прошедших отбор участников к действующей дистрибьюторской сети
-          и партнёрскому каналу с более чем 3 000 партнёров по всей России.
-        </p>
+        <div className="intro-copy">
+          <p>
+            Большинство акселераторов заканчиваются питчем и сертификатом. Вы три месяца готовите презентацию,
+            выходите на сцену, получаете аплодисменты — и возвращаетесь к тому, с чего начали: без контрактов,
+            без понимания, как именно ваш продукт попадёт к корпоративным заказчикам.
+          </p>
+          <p>UP устроен иначе. Это не про питч. Это про то, что будет после.</p>
+        </div>
       </section>
 
       <section className="section tracks">
@@ -117,7 +119,6 @@ export function LandingPage() {
               <Sparkles size={21} />
               <h3>{direction.name}</h3>
               <p>{direction.detail}</p>
-              {direction.count ? <span>{direction.count}</span> : null}
             </article>
           ))}
         </div>
@@ -129,7 +130,7 @@ export function LandingPage() {
           <h2>От заявки до Demo Day — пять шагов</h2>
         </div>
         {steps.map(([title, text], index) => (
-          <article key={title}>
+          <article className={index === steps.length - 1 ? "process-final" : undefined} key={title}>
             <strong>{String(index + 1).padStart(2, "0")}</strong>
             <div>
               <h3>{title}</h3>

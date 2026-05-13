@@ -239,11 +239,20 @@ h2 {
   font-weight: 800;
 }
 
-.intro > p,
+.intro-copy,
 .section-heading + p {
   color: var(--gray);
   font-size: 18px;
   line-height: 1.72;
+}
+
+.intro-copy {
+  display: grid;
+  gap: 18px;
+}
+
+.intro-copy p {
+  margin: 0;
 }
 
 .tracks {
@@ -266,8 +275,7 @@ h2 {
   padding: clamp(24px, 3vw, 38px);
 }
 
-.track-card > span,
-.direction-grid article > span {
+.track-card > span {
   display: inline-block;
   margin-bottom: 20px;
   color: var(--mint);
@@ -373,6 +381,15 @@ h3 {
   line-height: 1;
 }
 
+.process-final {
+  grid-column: 2;
+  border-color: rgba(175, 247, 66, 0.54);
+  background:
+    linear-gradient(135deg, rgba(175, 247, 66, 0.18), rgba(255, 255, 255, 0.08)),
+    rgba(255, 255, 255, 0.06);
+  box-shadow: inset 4px 0 0 var(--green);
+}
+
 .process p {
   color: rgba(255, 255, 255, 0.72);
   line-height: 1.6;
@@ -447,29 +464,6 @@ h3 {
   border: 1px solid var(--line);
   border-radius: 8px;
   box-shadow: var(--shadow);
-}
-
-.segmented {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 6px;
-  padding: 5px;
-  background: var(--soft);
-  border-radius: 8px;
-}
-
-.segmented button {
-  min-height: 44px;
-  border: 0;
-  border-radius: 6px;
-  background: transparent;
-  color: var(--gray);
-  font-weight: 800;
-}
-
-.segmented button.active {
-  background: var(--navy);
-  color: var(--white);
 }
 
 label {
@@ -642,6 +636,10 @@ footer a {
 
   .process .section-heading {
     grid-row: auto;
+  }
+
+  .process-final {
+    grid-column: auto;
   }
 
   .direction-grid,

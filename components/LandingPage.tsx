@@ -95,32 +95,37 @@ export function LandingPage() {
       <section className="section axoft-proof">
         <div className="axoft-proof-main">
           <p className="eyebrow">{axoft.kicker}</p>
-          <Image src={`${assetBasePath}/logos/axoft.png`} alt="Axoft" width={168} height={54} />
           <h2>{axoft.title}</h2>
           <p>{axoft.lead}</p>
           <a className="primary-link" href="#form">
             Подать заявку <ArrowRight size={18} />
           </a>
         </div>
-        <div className="axoft-proof-side">
-          <div className="axoft-stats">
-            {axoft.stats.map((stat) => (
-              <div key={stat.label}>
-                <strong>{stat.value}</strong>
-                <span>{stat.label}</span>
+        <div className="axoft-stats" aria-label="Ключевые показатели Axoft">
+          {axoft.stats.map((stat) => (
+            <div key={stat.label}>
+              <strong>{stat.value}</strong>
+              <span>{stat.label}</span>
+            </div>
+          ))}
+        </div>
+        <div className="axoft-points" aria-label="Как Axoft помогает участникам UP">
+          {axoft.points.map((point) => (
+            <article key={point.title}>
+              <Sparkles size={18} />
+              <div>
+                <h3>{point.title}</h3>
+                <p>{point.text}</p>
               </div>
-            ))}
-          </div>
-          <div className="axoft-points">
-            {axoft.points.map((point) => (
-              <article key={point.title}>
-                <Sparkles size={18} />
-                <div>
-                  <h3>{point.title}</h3>
-                  <p>{point.text}</p>
-                </div>
-              </article>
-            ))}
+            </article>
+          ))}
+        </div>
+        <div className="axoft-brand-card" aria-hidden="true">
+          <Image src={`${assetBasePath}/logos/axoft.png`} alt="" width={176} height={56} />
+          <div className="axoft-rings">
+            <span />
+            <span />
+            <span />
           </div>
         </div>
       </section>

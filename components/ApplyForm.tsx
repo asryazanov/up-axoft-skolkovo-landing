@@ -12,11 +12,8 @@ type Props = {
 type FormState = {
   type: "startup" | "vendor";
   company: string;
-  name: string;
   email: string;
-  phone: string;
   industry: string;
-  description: string;
   resident: "Да" | "Нет" | "В процессе оформления";
   consent: boolean;
 };
@@ -24,11 +21,8 @@ type FormState = {
 const initialState: FormState = {
   type: "startup",
   company: "",
-  name: "",
   email: "",
-  phone: "",
   industry: "",
-  description: "",
   resident: "Нет",
   consent: false
 };
@@ -60,10 +54,16 @@ export function ApplyForm({ industries }: Props) {
     event.preventDefault();
     setStatus("submitting");
 
-    window.sessionStorage.setItem(
-      "up-landing-last-application",
-      JSON.stringify({ ...form, utm, captchaProvider: "Yandex SmartCaptcha placeholder" })
-    );
+    const response = await fetch("/api/apply", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...form, utm })
+    });
+
+    if (!response.ok) {
+      setStatus("error");
+      return;
+    }
 
     router.push("/thanks");
   }
@@ -89,42 +89,34 @@ export function ApplyForm({ industries }: Props) {
 
       <label>
         <span>Название компании</span>
-        <input name="company" required value={form.company} onChange={(event) => update("company", event.target.value)} />
+        <input
+          name="company"
+          required
+          value={form.company}
+          onChange={(e) => update("company", e.target.value)}
+        />
       </label>
 
       <label>
-        <span>Контактное лицо</span>
-        <input name="contactName" required value={form.name} onChange={(event) => update("name", event.target.value)} />
+        <span>Рабочий email</span>
+        <input
+          required
+          name="email"
+          type="email"
+          inputMode="email"
+          value={form.email}
+          onChange={(e) => update("email", e.target.value)}
+        />
       </label>
-
-      <div className="form-grid">
-        <label>
-          <span>Email</span>
-          <input
-            required
-            name="email"
-            type="text"
-            inputMode="email"
-            value={form.email}
-            onChange={(event) => update("email", event.target.value)}
-          />
-        </label>
-        <label>
-          <span>Телефон</span>
-          <input
-            required
-            name="phone"
-            type="text"
-            inputMode="tel"
-            value={form.phone}
-            onChange={(event) => update("phone", event.target.value)}
-          />
-        </label>
-      </div>
 
       <label>
         <span>Отрасль</span>
-        <select name="industry" required value={form.industry} onChange={(event) => update("industry", event.target.value)}>
+        <select
+          name="industry"
+          required
+          value={form.industry}
+          onChange={(e) => update("industry", e.target.value)}
+        >
           <option value="">Выберите отрасль</option>
           {industries.map((industry) => (
             <option key={industry} value={industry}>
@@ -135,28 +127,17 @@ export function ApplyForm({ industries }: Props) {
       </label>
 
       <label>
-        <span>Краткое описание продукта / решения</span>
-        <textarea
-          name="description"
-          required
-          maxLength={500}
-          value={form.description}
-          onChange={(event) => update("description", event.target.value)}
-        />
-      </label>
-
-      <label>
         <span>Резидент «Сколково»</span>
-        <select name="resident" value={form.resident} onChange={(event) => update("resident", event.target.value as FormState["resident"])}>
+        <select
+          name="resident"
+          value={form.resident}
+          onChange={(e) => update("resident", e.target.value as FormState["resident"])}
+        >
           <option>Да</option>
           <option>Нет</option>
           <option>В процессе оформления</option>
         </select>
       </label>
-
-      <div className="captcha-placeholder">
-        Yandex SmartCaptcha будет подключена через sitekey и server key перед запуском.
-      </div>
 
       <label className="checkbox">
         <input
@@ -164,17 +145,25 @@ export function ApplyForm({ industries }: Props) {
           name="consent"
           type="checkbox"
           checked={form.consent}
-          onChange={(event) => update("consent", event.target.checked)}
+          onChange={(e) => update("consent", e.target.checked)}
         />
-        <span>Согласен с политикой обработки персональных данных</span>
+        <span>
+          Согласен с{" "}
+          <a href="/privacy" target="_blank" rel="noreferrer">
+            политикой обработки персональных данных
+          </a>
+        </span>
       </label>
 
       <button className="submit-button" type="submit" disabled={status === "submitting"}>
         <Send size={18} />
-        {status === "submitting" ? "Отправляем" : "Подать заявку"}
+        {status === "submitting" ? "Отправляем…" : "Подать заявку"}
       </button>
+      <p className="form-hint">Рассматриваем заявки в течение 5 рабочих дней. Результат — на email.</p>
 
-      {status === "error" ? <p className="form-error">Не удалось отправить заявку. Проверьте локальный сервер.</p> : null}
+      {status === "error" && (
+        <p className="form-error">Не удалось отправить заявку. Попробуйте ещё раз или напишите нам напрямую.</p>
+      )}
     </form>
   );
 }

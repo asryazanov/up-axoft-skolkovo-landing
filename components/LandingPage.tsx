@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { ArrowRight, CheckCircle2, ExternalLink, Sparkles } from "lucide-react";
 import { ApplyForm } from "@/components/ApplyForm";
 import { useEditableContent } from "@/lib/useEditableContent";
@@ -24,7 +23,7 @@ const evaluators = [
 ];
 
 const steps = [
-  ["Заявка", "Заполните форму и укажите тип участия — за двое суток придёт подтверждение о получении."],
+  ["Заявка", "Заполните форму — в течение 2 рабочих дней придёт подтверждение о получении."],
   ["Первичная оценка", "Эксперты программы проверяют релевантность направления, зрелость продукта и потенциал для канала."],
   ["Open Day", "Прошедшие отбор получают приглашение: знакомство с командой программы, критериями и маршрутом."],
   ["Сопровождение по треку", "Экспертиза продукта, упаковка решения, подготовка партнёрских и маркетинговых материалов."],
@@ -53,8 +52,11 @@ export function LandingPage() {
       <section className="hero" id="top">
         <div className="hero-copy">
           <p className="eyebrow">{content.hero.label}</p>
+          {content.hero.notice && (
+            <p className="hero-notice">{content.hero.notice}</p>
+          )}
           <h1>
-            <span>UP</span> {content.hero.title.replace("UP: ", "")}
+            <span>UP</span>: {content.hero.title.replace("UP: ", "")}
           </h1>
           <p>{content.hero.lead}</p>
           <div className="hero-actions">
@@ -79,12 +81,13 @@ export function LandingPage() {
       <section className="section intro" id="program">
         <div>
           <p className="eyebrow">О программе</p>
-          <h2>Скаутинг, экспертиза и выход в канал продаж</h2>
+          <h2>Чем UP отличается от обычного акселератора</h2>
         </div>
         <p>
-          Программа объединяет экспертизу Фонда «Сколково» и дистрибьюторскую практику Axoft.
-          Участники получают независимую оценку продукта, структурированный маршрут развития
-          и прямой путь к партнёрскому каналу с реальными продажами.
+          Большинство акселераторов заканчиваются питчем и сертификатом.
+          UP — это структурированный путь до реальных продаж.
+          Axoft подключает прошедших отбор участников к действующей дистрибьюторской сети
+          и партнёрскому каналу с более чем 3 000 партнёров по всей России.
         </p>
       </section>
 
@@ -161,7 +164,7 @@ export function LandingPage() {
         <div className="registry-list">
           {content.registryDirections.map((item) => (
             <div key={item.name}>
-              <span>{item.count === null ? "TBD" : item.count}</span>
+              <span>{item.count === null ? "—" : item.count}</span>
               <p>{item.name}</p>
               <small>{item.note}</small>
             </div>
@@ -187,7 +190,7 @@ export function LandingPage() {
       <section className="form-section" id="form">
         <div className="form-copy">
           <p className="eyebrow">Форма заявки</p>
-          <h2>Расскажите о компании и продукте</h2>
+          <h2>Подайте заявку — это займёт 3 минуты</h2>
           <p>
             Заполните форму — мы проверим соответствие критериям программы
             и свяжемся с вами в течение 2 рабочих дней.
@@ -203,7 +206,6 @@ export function LandingPage() {
           <Image src={`${assetBasePath}/logos/axoft.png`} alt="Axoft" width={112} height={36} />
         </div>
         <p>© 2026 UP: Axoft & Фонд «Сколково»</p>
-        <Link href="/admin">Управление</Link>
       </footer>
     </main>
   );

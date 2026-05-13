@@ -255,6 +255,112 @@ h2 {
   margin: 0;
 }
 
+.axoft-proof {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.95fr) minmax(0, 1.05fr);
+  gap: clamp(24px, 4vw, 52px);
+  align-items: stretch;
+  background:
+    linear-gradient(135deg, rgba(175, 247, 66, 0.12), rgba(255, 255, 255, 0) 44%),
+    var(--soft);
+}
+
+.axoft-proof-main,
+.axoft-proof-side {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+}
+
+.axoft-proof-main {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: clamp(26px, 4vw, 46px);
+  box-shadow: var(--shadow);
+}
+
+.axoft-proof-main img {
+  width: 168px;
+  height: auto;
+  margin: 12px 0 34px;
+}
+
+.axoft-proof-main p:not(.eyebrow) {
+  color: var(--gray);
+  font-size: 18px;
+  line-height: 1.68;
+}
+
+.axoft-proof-main .primary-link {
+  margin-top: auto;
+}
+
+.axoft-proof-side {
+  display: grid;
+  gap: 18px;
+  padding: clamp(20px, 3vw, 30px);
+}
+
+.axoft-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.axoft-stats div {
+  min-height: 120px;
+  padding: 18px;
+  border-radius: 8px;
+  background: var(--navy);
+  color: var(--white);
+}
+
+.axoft-stats strong {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--green);
+  font-size: clamp(28px, 3.4vw, 42px);
+  line-height: 1;
+}
+
+.axoft-stats span {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.axoft-points {
+  display: grid;
+  gap: 10px;
+}
+
+.axoft-points article {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+}
+
+.axoft-points svg {
+  color: var(--mint);
+  margin-top: 4px;
+}
+
+.axoft-points h3 {
+  margin-bottom: 6px;
+  font-size: 20px;
+}
+
+.axoft-points p {
+  margin: 0;
+  color: var(--gray);
+  line-height: 1.55;
+}
+
 .tracks {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -629,6 +735,7 @@ footer a {
 
   .hero,
   .intro,
+  .axoft-proof,
   .process,
   .form-section {
     grid-template-columns: 1fr;
@@ -643,6 +750,7 @@ footer a {
   }
 
   .direction-grid,
+  .axoft-stats,
   .services,
   .people-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -693,6 +801,7 @@ footer a {
 
   .tracks,
   .direction-grid,
+  .axoft-stats,
   .services,
   .people-grid,
   .form-grid {

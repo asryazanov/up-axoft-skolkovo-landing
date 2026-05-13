@@ -4,6 +4,7 @@ import Image from "next/image";
 import { ArrowRight, CheckCircle2, ExternalLink, Sparkles } from "lucide-react";
 import { ApplyForm } from "@/components/ApplyForm";
 import { useEditableContent } from "@/lib/useEditableContent";
+import { siteContent } from "@/data/site";
 
 const assetBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -32,6 +33,7 @@ const steps = [
 
 export function LandingPage() {
   const content = useEditableContent();
+  const axoft = content.axoft ?? siteContent.axoft;
 
   return (
     <main>
@@ -87,6 +89,39 @@ export function LandingPage() {
             без понимания, как именно ваш продукт попадёт к корпоративным заказчикам.
           </p>
           <p>UP устроен иначе. Это не про питч. Это про то, что будет после.</p>
+        </div>
+      </section>
+
+      <section className="section axoft-proof">
+        <div className="axoft-proof-main">
+          <p className="eyebrow">{axoft.kicker}</p>
+          <Image src={`${assetBasePath}/logos/axoft.png`} alt="Axoft" width={168} height={54} />
+          <h2>{axoft.title}</h2>
+          <p>{axoft.lead}</p>
+          <a className="primary-link" href="#form">
+            Подать заявку <ArrowRight size={18} />
+          </a>
+        </div>
+        <div className="axoft-proof-side">
+          <div className="axoft-stats">
+            {axoft.stats.map((stat) => (
+              <div key={stat.label}>
+                <strong>{stat.value}</strong>
+                <span>{stat.label}</span>
+              </div>
+            ))}
+          </div>
+          <div className="axoft-points">
+            {axoft.points.map((point) => (
+              <article key={point.title}>
+                <Sparkles size={18} />
+                <div>
+                  <h3>{point.title}</h3>
+                  <p>{point.text}</p>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 

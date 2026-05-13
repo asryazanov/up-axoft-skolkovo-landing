@@ -120,14 +120,6 @@ export function LandingPage() {
             </article>
           ))}
         </div>
-        <div className="axoft-brand-card" aria-hidden="true">
-          <Image src={`${assetBasePath}/logos/axoft.png`} alt="" width={176} height={56} />
-          <div className="axoft-rings">
-            <span />
-            <span />
-            <span />
-          </div>
-        </div>
       </section>
 
       <section className="section tracks">

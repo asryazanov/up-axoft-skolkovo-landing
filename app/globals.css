@@ -455,17 +455,6 @@ h3 {
   padding: 24px;
 }
 
-.avatar {
-  display: grid;
-  place-items: center;
-  width: 58px;
-  height: 58px;
-  margin-bottom: 24px;
-  border-radius: 50%;
-  background: var(--navy);
-  color: var(--green);
-}
-
 .form-section {
   display: grid;
   grid-template-columns: minmax(280px, 0.8fr) minmax(320px, 1fr);
@@ -482,24 +471,7 @@ h3 {
   line-height: 1.7;
 }
 
-.form-badges {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 26px;
-}
 
-.form-badges span {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 9px 11px;
-  border-radius: 8px;
-  background: var(--white);
-  color: var(--navy);
-  font-size: 13px;
-  font-weight: 800;
-}
 
 .apply-form {
   display: grid;
@@ -788,4 +760,32 @@ footer a {
     align-items: stretch;
     flex-direction: column;
   }
+}
+
+
+.people-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.people-grid article {
+  padding: 28px 24px;
+  border-radius: 12px;
+  background: var(--soft);
+  border-left: 4px solid var(--green);
+}
+
+.people-grid h3 {
+  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.people-grid p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--gray);
+  line-height: 1.55;
 }

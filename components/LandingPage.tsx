@@ -1,12 +1,32 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowRight, BarChart3, CalendarClock, CheckCircle2, ExternalLink, Gauge, ShieldCheck, Sparkles, Users } from "lucide-react";
+import { ArrowRight, CheckCircle2, ExternalLink, Sparkles } from "lucide-react";
 import { ApplyForm } from "@/components/ApplyForm";
 import { useEditableContent } from "@/lib/useEditableContent";
 
-const experts = ["Эксперт Axoft", "Эксперт «Сколково»", "Отраслевой ментор"];
-const team = ["Менеджер программы", "Куратор заявок", "Технический координатор"];
+const evaluators = [
+  {
+    role: "Экспертная комиссия Axoft",
+    description: "Оценивает рыночный потенциал продукта и готовность к дистрибуции через партнёрский канал."
+  },
+  {
+    role: "Технологические эксперты «Сколково»",
+    description: "Оценивают зрелость продукта, инновационность решения и соответствие технологическим трендам."
+  },
+  {
+    role: "Отраслевые менторы",
+    description: "Практики с опытом внедрения и продаж в целевых отраслях — промышленность, финансы, ИТ."
+  }
+];
+
+const steps = [
+  ["Заявка", "Заполните форму и укажите тип участия — за двое суток придёт подтверждение о получении."],
+  ["Первичная оценка", "Эксперты программы проверяют релевантность направления, зрелость продукта и потенциал для канала."],
+  ["Open Day", "Прошедшие отбор получают приглашение: знакомство с командой программы, критериями и маршрутом."],
+  ["Сопровождение по треку", "Экспертиза продукта, упаковка решения, подготовка партнёрских и маркетинговых материалов."],
+  ["Demo Day", "Финалисты представляют решения индустриальным заказчикам и партнёрам Axoft в формате живых презентаций."]
+];
 
 export function LandingPage() {
   const content = useEditableContent();
@@ -31,15 +51,15 @@ export function LandingPage() {
         <div className="hero-copy">
           <p className="eyebrow">{content.hero.label}</p>
           <h1>
-            <span>UP</span> {content.hero.title.replace("UP ", "")}
+            <span>UP</span> {content.hero.title.replace("UP: ", "")}
           </h1>
           <p>{content.hero.lead}</p>
           <div className="hero-actions">
-            <a className="primary-link" href="#form" data-goal="hero_startup">
-              Я стартап <ArrowRight size={18} />
+            <a className="primary-link" href="#form">
+              Подать заявку <ArrowRight size={18} />
             </a>
-            <a className="secondary-link" href="#form" data-goal="hero_vendor">
-              Я вендор <ArrowRight size={18} />
+            <a className="secondary-link" href="#program">
+              Узнать подробнее <ArrowRight size={18} />
             </a>
           </div>
         </div>
@@ -56,11 +76,12 @@ export function LandingPage() {
       <section className="section intro" id="program">
         <div>
           <p className="eyebrow">О программе</p>
-          <h2>Скаутинг, экспертиза и подготовка к партнёрскому каналу</h2>
+          <h2>Скаутинг, экспертиза и выход в канал продаж</h2>
         </div>
         <p>
-          Программа соединяет экспертизу Фонда «Сколково» и дистрибьюторскую практику Axoft. Лендинг помогает
-          собрать поток заявок, маршрутизировать компании по трекам и подготовить данные для CRM.
+          Программа объединяет экспертизу Фонда «Сколково» и дистрибьюторскую практику Axoft.
+          Участники получают независимую оценку продукта, структурированный маршрут развития
+          и прямой путь к партнёрскому каналу с реальными продажами.
         </p>
       </section>
 
@@ -85,7 +106,7 @@ export function LandingPage() {
       <section className="section directions" id="directions">
         <div className="section-heading">
           <p className="eyebrow">Приоритетные направления</p>
-          <h2>Первый фокус — промышленность, рядом зрелые ИТ-категории</h2>
+          <h2>Ключевой фокус — промышленность и зрелые ИТ-категории</h2>
         </div>
         <div className="direction-grid">
           {content.directions.map((direction) => (
@@ -102,14 +123,9 @@ export function LandingPage() {
       <section className="section process">
         <div className="section-heading">
           <p className="eyebrow">Структура программы</p>
-          <h2>От заявки до Demo Day</h2>
+          <h2>От заявки до Demo Day — пять шагов</h2>
         </div>
-        {[
-          ["Заявка", "Компания выбирает тип участника и отправляет данные через форму."],
-          ["Заочная оценка", "Команда проверяет релевантность, отрасль, зрелость продукта и потенциал канала."],
-          ["Open Day", "Участники получают вводную встречу, критерии и маршрут программы."],
-          ["Demo Day", "Финалисты презентуют решения профильным заказчикам и партнёрам."]
-        ].map(([title, text], index) => (
+        {steps.map(([title, text], index) => (
           <article key={title}>
             <strong>{String(index + 1).padStart(2, "0")}</strong>
             <div>
@@ -123,7 +139,7 @@ export function LandingPage() {
       <section className="section services">
         <div className="section-heading">
           <p className="eyebrow">Сервисы «Сколково»</p>
-          <h2>Навигация к возможностям экосистемы</h2>
+          <h2>Возможности экосистемы для участников</h2>
         </div>
         {content.services.map((service) => (
           <a key={service.name} href={service.href} target="_blank" rel="noreferrer">
@@ -136,8 +152,8 @@ export function LandingPage() {
 
       <section className="section registry">
         <div>
-          <p className="eyebrow">Реестр продуктов</p>
-          <h2>Категории для отбора и коммуникации</h2>
+          <p className="eyebrow">Реестр продуктов Axoft</p>
+          <h2>Направления отбора и текущий пул решений</h2>
         </div>
         <div className="registry-list">
           {content.registryDirections.map((item) => (
@@ -152,15 +168,14 @@ export function LandingPage() {
 
       <section className="section people">
         <div className="section-heading">
-          <p className="eyebrow">Эксперты и команда</p>
-          <h2>Плейсхолдеры до получения фото и биографий</h2>
+          <p className="eyebrow">Оценка заявок</p>
+          <h2>Кто принимает решение</h2>
         </div>
         <div className="people-grid">
-          {[...experts, ...team].map((person, index) => (
-            <article key={person}>
-              <div className="avatar">{index < 3 ? <ShieldCheck /> : <Users />}</div>
-              <h3>{person}</h3>
-              <p>{index < 3 ? "Экспертиза программы" : "Операционное сопровождение"}</p>
+          {evaluators.map((evaluator) => (
+            <article key={evaluator.role}>
+              <h3>{evaluator.role}</h3>
+              <p>{evaluator.description}</p>
             </article>
           ))}
         </div>
@@ -171,14 +186,9 @@ export function LandingPage() {
           <p className="eyebrow">Форма заявки</p>
           <h2>Расскажите о компании и продукте</h2>
           <p>
-            Сейчас форма работает в демо-режиме. После получения параметров Bitrix24 она будет создавать лид,
-            прокидывать UTM и разделять поток по типу участника.
+            Заполните форму — мы проверим соответствие критериям программы
+            и свяжемся с вами в течение 2 рабочих дней.
           </p>
-          <div className="form-badges">
-            <span><BarChart3 size={16} /> Метрика: заглушка</span>
-            <span><Gauge size={16} /> B24: mock API</span>
-            <span><CalendarClock size={16} /> Сроки: TBD</span>
-          </div>
         </div>
         <ApplyForm industries={content.industries} />
       </section>
@@ -189,8 +199,8 @@ export function LandingPage() {
           <span className="brand-divider" />
           <Image src="/logos/axoft.png" alt="Axoft" width={112} height={36} />
         </div>
-        <p>© 2026 UP: Axoft & Фонд «Сколково». Локальный прототип.</p>
-        <a href="/admin">Админка</a>
+        <p>© 2026 UP: Axoft & Фонд «Сколково»</p>
+        <a href="/admin">Управление</a>
       </footer>
     </main>
   );

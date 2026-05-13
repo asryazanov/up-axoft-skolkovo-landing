@@ -1,0 +1,17 @@
+.DS_Store
+.next/
+node_modules/
+
+# Source materials and private working docs
+*.docx
+*.pdf
+*.xlsx
+*.xls
+*.ai
+~$*
+Лого/
+
+# Local env files
+.env
+.env.*
+!.env.example

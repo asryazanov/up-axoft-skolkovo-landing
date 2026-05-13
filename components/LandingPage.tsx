@@ -1,9 +1,12 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowRight, CheckCircle2, ExternalLink, Sparkles } from "lucide-react";
 import { ApplyForm } from "@/components/ApplyForm";
 import { useEditableContent } from "@/lib/useEditableContent";
+
+const assetBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 const evaluators = [
   {
@@ -35,9 +38,9 @@ export function LandingPage() {
     <main>
       <header className="site-header">
         <a className="brand-pair" href="#top" aria-label="UP Axoft Сколково">
-          <Image src="/logos/skolkovo.png" alt="Сколково" width={146} height={41} priority />
+          <Image src={`${assetBasePath}/logos/skolkovo.png`} alt="Сколково" width={146} height={41} priority />
           <span className="brand-divider" />
-          <Image src="/logos/axoft.png" alt="Axoft" width={125} height={40} priority />
+          <Image src={`${assetBasePath}/logos/axoft.png`} alt="Axoft" width={125} height={40} priority />
         </a>
         <nav>
           <a href="#program">Программа</a>
@@ -195,12 +198,12 @@ export function LandingPage() {
 
       <footer>
         <div className="brand-pair">
-          <Image src="/logos/skolkovo.png" alt="Сколково" width={126} height={36} />
+          <Image src={`${assetBasePath}/logos/skolkovo.png`} alt="Сколково" width={126} height={36} />
           <span className="brand-divider" />
-          <Image src="/logos/axoft.png" alt="Axoft" width={112} height={36} />
+          <Image src={`${assetBasePath}/logos/axoft.png`} alt="Axoft" width={112} height={36} />
         </div>
         <p>© 2026 UP: Axoft & Фонд «Сколково»</p>
-        <a href="/admin">Управление</a>
+        <Link href="/admin">Управление</Link>
       </footer>
     </main>
   );

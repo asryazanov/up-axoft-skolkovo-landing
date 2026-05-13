@@ -60,16 +60,10 @@ export function ApplyForm({ industries }: Props) {
     event.preventDefault();
     setStatus("submitting");
 
-    const response = await fetch("/api/apply", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, utm, captchaProvider: "Yandex SmartCaptcha placeholder" })
-    });
-
-    if (!response.ok) {
-      setStatus("error");
-      return;
-    }
+    window.sessionStorage.setItem(
+      "up-landing-last-application",
+      JSON.stringify({ ...form, utm, captchaProvider: "Yandex SmartCaptcha placeholder" })
+    );
 
     router.push("/thanks");
   }

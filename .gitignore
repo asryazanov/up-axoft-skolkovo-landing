@@ -1,6 +1,7 @@
 .DS_Store
 .next/
 out/
+tsconfig.tsbuildinfo
 node_modules/
 
 # Source materials and private working docs

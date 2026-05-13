@@ -5,6 +5,8 @@ import type { FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Send } from "lucide-react";
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 type Props = {
   industries: string[];
 };
@@ -54,16 +56,7 @@ export function ApplyForm({ industries }: Props) {
     event.preventDefault();
     setStatus("submitting");
 
-    const response = await fetch("/api/apply", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, utm })
-    });
-
-    if (!response.ok) {
-      setStatus("error");
-      return;
-    }
+    window.sessionStorage.setItem("up-landing-last-application", JSON.stringify({ ...form, utm }));
 
     router.push("/thanks");
   }
@@ -149,7 +142,7 @@ export function ApplyForm({ industries }: Props) {
         />
         <span>
           Согласен с{" "}
-          <a href="/privacy" target="_blank" rel="noreferrer">
+          <a href={`${basePath}/privacy/`} target="_blank" rel="noreferrer">
             политикой обработки персональных данных
           </a>
         </span>

@@ -63,9 +63,6 @@ export function LandingPage() {
             <a className="primary-link" href="#form">
               Подать заявку <ArrowRight size={18} />
             </a>
-            <a className="secondary-link" href="#program">
-              Узнать подробнее <ArrowRight size={18} />
-            </a>
           </div>
         </div>
         <div className="hero-panel" aria-label="Ключевые показатели">
@@ -156,22 +153,6 @@ export function LandingPage() {
         ))}
       </section>
 
-      <section className="section registry">
-        <div>
-          <p className="eyebrow">Реестр продуктов Axoft</p>
-          <h2>Направления отбора и текущий пул решений</h2>
-        </div>
-        <div className="registry-list">
-          {content.registryDirections.map((item) => (
-            <div key={item.name}>
-              <span>{item.count === null ? "—" : item.count}</span>
-              <p>{item.name}</p>
-              <small>{item.note}</small>
-            </div>
-          ))}
-        </div>
-      </section>
-
       <section className="section people">
         <div className="section-heading">
           <p className="eyebrow">Оценка заявок</p>
@@ -197,6 +178,21 @@ export function LandingPage() {
           </p>
         </div>
         <ApplyForm industries={content.industries} />
+      </section>
+
+      <section className="section faq">
+        <div className="section-heading">
+          <p className="eyebrow">FAQ</p>
+          <h2>Ответы на частые вопросы</h2>
+        </div>
+        <div className="faq-list">
+          {content.faq.map((item) => (
+            <details key={item.question}>
+              <summary>{item.question}</summary>
+              <p>{item.answer}</p>
+            </details>
+          ))}
+        </div>
       </section>
 
       <footer>

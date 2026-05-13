@@ -286,8 +286,7 @@ h3 {
 .track-card p,
 .direction-grid p,
 .people-grid p,
-.services span,
-.registry small {
+.services span {
   color: var(--gray);
   line-height: 1.58;
 }
@@ -407,39 +406,6 @@ h3 {
   font-size: 22px;
 }
 
-.registry {
-  display: grid;
-  grid-template-columns: minmax(260px, 0.7fr) minmax(0, 1fr);
-  gap: 36px;
-}
-
-.registry-list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.registry-list div {
-  min-height: 132px;
-  padding: 20px;
-  border-left: 4px solid var(--green);
-  background: var(--soft);
-  border-radius: 8px;
-}
-
-.registry-list span {
-  display: block;
-  color: var(--blue);
-  font-size: 30px;
-  font-weight: 800;
-}
-
-.registry-list p {
-  margin: 8px 0 4px;
-  color: var(--navy);
-  font-weight: 800;
-}
-
 .people {
   background: var(--white);
 }
@@ -543,19 +509,6 @@ select:focus,
 textarea:focus {
   border-color: var(--blue);
   box-shadow: 0 0 0 4px rgba(0, 173, 239, 0.12);
-}
-
-.captcha-placeholder {
-  min-height: 58px;
-  display: flex;
-  align-items: center;
-  padding: 13px;
-  border: 1px dashed rgba(77, 87, 89, 0.38);
-  border-radius: 8px;
-  color: var(--gray);
-  background: var(--soft);
-  font-size: 13px;
-  line-height: 1.45;
 }
 
 .checkbox {
@@ -683,7 +636,6 @@ footer a {
   .hero,
   .intro,
   .process,
-  .registry,
   .form-section {
     grid-template-columns: 1fr;
   }
@@ -745,7 +697,6 @@ footer a {
   .direction-grid,
   .services,
   .people-grid,
-  .registry-list,
   .form-grid {
     grid-template-columns: 1fr;
   }
@@ -810,6 +761,38 @@ footer a {
   color: var(--gray);
   opacity: 0.75;
   text-align: center;
+}
+
+.faq {
+  background: var(--white);
+}
+
+.faq-list {
+  display: grid;
+  gap: 12px;
+  max-width: 920px;
+}
+
+.faq-list details {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--soft);
+  overflow: hidden;
+}
+
+.faq-list summary {
+  cursor: pointer;
+  padding: 20px 22px;
+  color: var(--navy);
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.faq-list p {
+  margin: 0;
+  padding: 0 22px 22px;
+  color: var(--gray);
+  line-height: 1.65;
 }
 
 /* ── Doc pages: /privacy, /thanks ── */

@@ -257,15 +257,10 @@ h2 {
 
 .axoft-proof {
   display: grid;
-  grid-template-columns: minmax(280px, 0.58fr) minmax(0, 1.42fr);
-  gap: clamp(16px, 2.4vw, 24px);
-  align-items: start;
-  padding-top: clamp(46px, 6vw, 72px);
-  padding-bottom: clamp(46px, 6vw, 72px);
-  background:
-    radial-gradient(circle at 86% 18%, rgba(0, 185, 190, 0.38), transparent 36%),
-    linear-gradient(135deg, #202a4d 0%, #142642 52%, #104e61 100%);
-  color: var(--white);
+  grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1.28fr);
+  gap: 18px;
+  align-items: stretch;
+  background: var(--soft);
 }
 
 .axoft-proof-main {
@@ -273,30 +268,31 @@ h2 {
   flex-direction: column;
   align-items: flex-start;
   min-height: 100%;
-  padding: clamp(20px, 2.5vw, 30px);
-  border: 1px solid rgba(0, 190, 200, 0.52);
+  padding: clamp(24px, 3vw, 38px);
+  border: 1px solid var(--line);
   border-radius: 8px;
-  background: rgba(31, 42, 77, 0.54);
+  background: var(--white);
+  box-shadow: var(--shadow);
 }
 
 .axoft-proof h2,
 .axoft-proof h3 {
-  color: var(--white);
+  color: var(--navy);
 }
 
 .axoft-proof .eyebrow {
-  color: var(--cyan);
+  color: var(--mint);
 }
 
 .axoft-proof-main p:not(.eyebrow),
 .axoft-points p,
 .axoft-stats span {
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--gray);
 }
 
 .axoft-proof-main p:not(.eyebrow) {
-  font-size: 16px;
-  line-height: 1.58;
+  font-size: 17px;
+  line-height: 1.65;
 }
 
 .axoft-proof-main .primary-link {
@@ -306,65 +302,66 @@ h2 {
 .axoft-stats {
   grid-column: 2;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
 }
 
 .axoft-stats div {
-  min-height: 112px;
-  padding: 18px;
-  border: 1px solid rgba(0, 222, 229, 0.6);
+  min-height: 132px;
+  padding: 20px;
+  border: 1px solid var(--line);
   border-radius: 8px;
-  background:
-    linear-gradient(135deg, rgba(13, 193, 202, 0.94), rgba(8, 129, 148, 0.82)),
-    rgba(0, 190, 200, 0.88);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  background: var(--white);
 }
 
 .axoft-stats strong {
   display: block;
-  margin-bottom: 7px;
-  color: var(--white);
-  font-size: clamp(24px, 2.7vw, 36px);
-  line-height: 1;
+  margin-bottom: 10px;
+  color: var(--navy);
+  font-size: clamp(26px, 3vw, 40px);
+  line-height: 1.02;
+  overflow-wrap: anywhere;
 }
 
 .axoft-stats span {
-  font-size: 14px;
-  line-height: 1.28;
+  color: var(--mint);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.32;
+  text-transform: uppercase;
 }
 
 .axoft-points {
   grid-column: 1 / -1;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+  gap: 12px;
 }
 
 .axoft-points article {
   display: grid;
   grid-template-columns: 24px 1fr;
   gap: 10px;
-  padding: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 18px;
+  border: 1px solid var(--line);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--white);
 }
 
 .axoft-points svg {
-  color: var(--green);
+  color: var(--mint);
   margin-top: 4px;
 }
 
 .axoft-points h3 {
-  margin-bottom: 4px;
-  font-size: 16px;
+  margin-bottom: 6px;
+  font-size: 18px;
 }
 
 .axoft-points p {
   margin: 0;
-  font-size: 14px;
-  line-height: 1.46;
+  font-size: 15px;
+  line-height: 1.52;
 }
 
 .tracks {

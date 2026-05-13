@@ -257,27 +257,23 @@ h2 {
 
 .axoft-proof {
   display: grid;
-  grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1.28fr);
+  grid-template-columns: 1fr;
   gap: 18px;
-  align-items: stretch;
   background: var(--soft);
 }
 
 .axoft-proof-main {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  min-height: 100%;
-  padding: clamp(24px, 3vw, 38px);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--white);
-  box-shadow: var(--shadow);
+  max-width: 980px;
 }
 
 .axoft-proof h2,
 .axoft-proof h3 {
   color: var(--navy);
+}
+
+.axoft-proof h2 {
+  max-width: 920px;
+  font-size: clamp(34px, 4.2vw, 56px);
 }
 
 .axoft-proof .eyebrow {
@@ -291,27 +287,28 @@ h2 {
 }
 
 .axoft-proof-main p:not(.eyebrow) {
+  max-width: 760px;
   font-size: 17px;
   line-height: 1.65;
 }
 
 .axoft-proof-main .primary-link {
-  margin-top: 22px;
+  margin-top: 24px;
 }
 
 .axoft-stats {
-  grid-column: 2;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
 }
 
 .axoft-stats div {
-  min-height: 132px;
+  min-height: 148px;
   padding: 20px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--white);
+  box-shadow: 0 12px 32px rgba(17, 29, 64, 0.05);
 }
 
 .axoft-stats strong {
@@ -332,7 +329,6 @@ h2 {
 }
 
 .axoft-points {
-  grid-column: 1 / -1;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;

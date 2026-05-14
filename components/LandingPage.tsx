@@ -437,7 +437,13 @@ export function LandingPage() {
         <div className="brand-pair">
           <Image src={`${assetBasePath}/logos/skolkovo.png`} alt="Сколково" width={126} height={36} />
           <span className="brand-divider" />
-          <Image src={`${assetBasePath}/logos/axoft.png`} alt="Axoft" width={112} height={36} />
+          <Image
+            className="footer-axoft-logo"
+            src={`${assetBasePath}/logos/axoft-footer-white.png`}
+            alt="Axoft — центр экспертизы и дистрибуции цифровых технологий"
+            width={253}
+            height={40}
+          />
         </div>
         <p>© 2026 UP: Axoft & Фонд «Сколково»</p>
       </footer>

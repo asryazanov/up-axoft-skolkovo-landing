@@ -1255,6 +1255,11 @@ footer .brand-pair img {
   max-height: 34px;
 }
 
+footer .footer-axoft-logo {
+  max-height: 42px;
+  width: auto;
+}
+
 footer .brand-divider {
   background: rgba(255, 255, 255, 0.6);
 }

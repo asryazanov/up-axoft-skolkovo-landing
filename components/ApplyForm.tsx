@@ -87,7 +87,7 @@ export function ApplyForm({ industries, onSuccess }: Props) {
       </label>
 
       <label>
-        <span>Ссылка на сайт, продукт или презентацию</span>
+        <span>Ссылка на сайт, продуктовую страницу или заполненный pitch deck</span>
         <input
           required
           name="productLink"

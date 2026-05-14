@@ -8,6 +8,7 @@ import { useEditableContent } from "@/lib/useEditableContent";
 import { siteContent } from "@/data/site";
 
 const assetBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const pitchDeckTemplateHref = `${assetBasePath}/documents/up-pitch-deck-template.pptx`;
 
 const evaluators = [
   {
@@ -249,7 +250,7 @@ export function LandingPage() {
                   );
                 }
                 return (
-                  <a key={document.name} href={href}>
+                  <a key={document.name} href={href} download={href.endsWith(".pptx") ? true : undefined}>
                     <FileText size={18} />
                     {document.name}
                   </a>
@@ -279,6 +280,10 @@ export function LandingPage() {
               <p className="eyebrow">Форма заявки</p>
               <h2 id="application-title">Подайте заявку — это займёт 3 минуты</h2>
               <p>Мы проверим соответствие критериям программы и свяжемся с вами после первичной оценки.</p>
+              <a className="template-download" href={pitchDeckTemplateHref} download>
+                <FileText size={18} />
+                Скачать шаблон презентации
+              </a>
             </div>
             <ApplyForm industries={content.industries} onSuccess={completeForm} />
           </div>

@@ -2,7 +2,18 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { ArrowRight, CheckCircle2, FileText, Menu, Sparkles, X } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  FileText,
+  Gauge,
+  Handshake,
+  Menu,
+  Microscope,
+  Sparkles,
+  WalletCards,
+  X
+} from "lucide-react";
 import { ApplyForm } from "@/components/ApplyForm";
 import { useEditableContent } from "@/lib/useEditableContent";
 import { siteContent } from "@/data/site";
@@ -34,10 +45,26 @@ const steps = [
 ];
 
 const programResults = [
-  ["Деньги", "Маршрут к грантам, пилотам и коммерческим возможностям там, где продукт уже готов к рынку."],
-  ["Экспертиза", "Разбор продукта, позиционирования, зрелости и готовности к корпоративным внедрениям."],
-  ["Партнёры", "Понимание, как продукт может попасть в канал продаж и стать понятным партнёрам Axoft."],
-  ["Скорость", "Фокус на действиях после отбора: быстрее проверить гипотезы, упаковку и путь к заказчикам."]
+  {
+    title: "Деньги",
+    text: "Маршрут к грантам, пилотам и коммерческим возможностям там, где продукт уже готов к рынку.",
+    Icon: WalletCards
+  },
+  {
+    title: "Экспертиза",
+    text: "Разбор продукта, позиционирования, зрелости и готовности к корпоративным внедрениям.",
+    Icon: Microscope
+  },
+  {
+    title: "Партнёры",
+    text: "Понимание, как продукт может попасть в канал продаж и стать понятным партнёрам Axoft.",
+    Icon: Handshake
+  },
+  {
+    title: "Скорость",
+    text: "Фокус на действиях после отбора: быстрее проверить гипотезы, упаковку и путь к заказчикам.",
+    Icon: Gauge
+  }
 ];
 
 const navigationItems = [
@@ -207,8 +234,11 @@ export function LandingPage() {
             экспертизе, партнёрам и первым рыночным проверкам вместе с Axoft и экосистемой «Сколково».
           </p>
           <div className="result-grid">
-            {programResults.map(([title, text]) => (
+            {programResults.map(({ title, text, Icon }) => (
               <article key={title}>
+                <span className="result-icon" aria-hidden="true">
+                  <Icon size={22} />
+                </span>
                 <strong>{title}</strong>
                 <span>{text}</span>
               </article>

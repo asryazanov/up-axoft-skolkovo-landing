@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { ArrowRight, CheckCircle2, FileText, Sparkles, X } from "lucide-react";
+import { ArrowRight, CheckCircle2, FileText, Menu, Sparkles, X } from "lucide-react";
 import { ApplyForm } from "@/components/ApplyForm";
 import { useEditableContent } from "@/lib/useEditableContent";
 import { siteContent } from "@/data/site";
@@ -40,17 +40,35 @@ const programResults = [
   ["Скорость", "Фокус на действиях после отбора: быстрее проверить гипотезы, упаковку и путь к заказчикам."]
 ];
 
+const navigationItems = [
+  ["program", "Программа"],
+  ["axoft", "Axoft"],
+  ["directions", "Направления"],
+  ["faq", "FAQ"]
+];
+
 export function LandingPage() {
   const content = useEditableContent();
   const axoft = content.axoft ?? siteContent.axoft;
   const criteria = content.criteria ?? siteContent.criteria;
   const documents = content.documents ?? siteContent.documents;
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("program");
   const [showSuccess, setShowSuccess] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const toastRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
 
   function openForm() {
+    previousFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     setIsFormOpen(true);
+    setIsMobileNavOpen(false);
     setShowSuccess(false);
+  }
+
+  function closeForm() {
+    setIsFormOpen(false);
   }
 
   function completeForm() {
@@ -58,8 +76,89 @@ export function LandingPage() {
     setShowSuccess(true);
   }
 
+  useEffect(() => {
+    const sections = navigationItems
+      .map(([id]) => document.getElementById(id))
+      .filter((section): section is HTMLElement => Boolean(section));
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+        if (visible?.target.id) {
+          setActiveSection(visible.target.id);
+        }
+      },
+      { rootMargin: "-35% 0px -50% 0px", threshold: [0.1, 0.35, 0.6] }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isFormOpen) {
+      previousFocusRef.current?.focus();
+      return;
+    }
+
+    const modal = modalRef.current;
+    if (!modal) return;
+
+    const focusableSelector =
+      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+
+    const focusable = Array.from(modal.querySelectorAll<HTMLElement>(focusableSelector));
+    const firstFocusable = focusable[0];
+    const lastFocusable = focusable[focusable.length - 1];
+    const firstField = modal.querySelector<HTMLElement>('input[name="company"]');
+
+    (firstField ?? firstFocusable)?.focus();
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeForm();
+      }
+
+      if (event.key !== "Tab" || !firstFocusable || !lastFocusable) return;
+
+      if (event.shiftKey && document.activeElement === firstFocusable) {
+        event.preventDefault();
+        lastFocusable.focus();
+      } else if (!event.shiftKey && document.activeElement === lastFocusable) {
+        event.preventDefault();
+        firstFocusable.focus();
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isFormOpen]);
+
+  useEffect(() => {
+    if (!showSuccess) return;
+    toastRef.current?.focus();
+  }, [showSuccess]);
+
   const primaryAxoftStats = axoft.stats.slice(0, 4);
   const secondaryAxoftStats = axoft.stats.slice(4);
+
+  function renderNavLinks() {
+    return navigationItems.map(([id, label]) => (
+      <a
+        key={id}
+        href={`#${id}`}
+        className={activeSection === id ? "is-active" : undefined}
+        aria-current={activeSection === id ? "location" : undefined}
+        onClick={() => setIsMobileNavOpen(false)}
+      >
+        {label}
+      </a>
+    ));
+  }
 
   return (
     <main>
@@ -69,17 +168,31 @@ export function LandingPage() {
           <span className="brand-divider" />
           <Image src={`${assetBasePath}/logos/axoft.png`} alt="Axoft" width={125} height={40} priority />
         </a>
-        <nav>
-          <a href="#program">Программа</a>
-          <a href="#axoft">Axoft</a>
-          <a href="#directions">Направления</a>
-          <a href="#faq">FAQ</a>
+        <nav aria-label="Основная навигация">
+          {renderNavLinks()}
         </nav>
+        <button
+          className="mobile-nav-toggle"
+          type="button"
+          aria-label={isMobileNavOpen ? "Закрыть меню" : "Открыть меню"}
+          aria-expanded={isMobileNavOpen}
+          aria-controls="mobile-navigation"
+          onClick={() => setIsMobileNavOpen((current) => !current)}
+        >
+          {isMobileNavOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
         <button className="header-cta" type="button" onClick={openForm}>Подать заявку</button>
+        <nav
+          className={isMobileNavOpen ? "mobile-navigation is-open" : "mobile-navigation"}
+          id="mobile-navigation"
+          aria-label="Навигация по разделам"
+        >
+          {renderNavLinks()}
+        </nav>
       </header>
 
       {showSuccess && (
-        <div className="toast" role="status">
+        <div className="toast" role="status" aria-live="polite" tabIndex={-1} ref={toastRef}>
           Заявка сохранена. Мы свяжемся с вами после первичной проверки.
         </div>
       )}
@@ -265,15 +378,15 @@ export function LandingPage() {
       </section>
 
       {isFormOpen && (
-        <div className="modal-backdrop" role="presentation" onMouseDown={() => setIsFormOpen(false)}>
+        <div className="modal-backdrop" role="presentation">
           <div
             className="application-modal"
             role="dialog"
             aria-modal="true"
             aria-labelledby="application-title"
-            onMouseDown={(event) => event.stopPropagation()}
+            ref={modalRef}
           >
-            <button className="modal-close" type="button" onClick={() => setIsFormOpen(false)} aria-label="Закрыть форму">
+            <button className="modal-close" type="button" onClick={closeForm} aria-label="Закрыть форму">
               <X size={20} />
             </button>
             <div className="modal-copy">

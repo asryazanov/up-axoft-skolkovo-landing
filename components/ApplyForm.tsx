@@ -29,9 +29,21 @@ const initialState: FormState = {
   consent: false
 };
 
+type FormErrors = Partial<Record<keyof FormState, string>>;
+
+function normalizeUrl(value: string) {
+  const trimmed = value.trim();
+  if (!trimmed || /^[a-z][a-z0-9+.-]*:\/\//i.test(trimmed)) {
+    return trimmed;
+  }
+
+  return `https://${trimmed}`;
+}
+
 export function ApplyForm({ industries, onSuccess }: Props) {
   const [form, setForm] = useState<FormState>(initialState);
   const [status, setStatus] = useState<"idle" | "submitting" | "error">("idle");
+  const [errors, setErrors] = useState<FormErrors>({});
   const [utm, setUtm] = useState({
     utm_source: null as string | null,
     utm_medium: null as string | null,
@@ -49,61 +61,129 @@ export function ApplyForm({ industries, onSuccess }: Props) {
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((current) => ({ ...current, [key]: value }));
+    setErrors((current) => {
+      if (!current[key]) return current;
+      const next = { ...current };
+      delete next[key];
+      return next;
+    });
+  }
+
+  function validate(currentForm: FormState) {
+    const nextErrors: FormErrors = {};
+
+    if (!currentForm.company.trim()) {
+      nextErrors.company = "Укажите название компании.";
+    }
+
+    if (!currentForm.email.trim()) {
+      nextErrors.email = "Укажите рабочий email.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(currentForm.email.trim())) {
+      nextErrors.email = "Проверьте формат email.";
+    }
+
+    const normalizedProductLink = normalizeUrl(currentForm.productLink);
+    if (!normalizedProductLink) {
+      nextErrors.productLink = "Добавьте ссылку на сайт, продукт или pitch deck.";
+    } else {
+      try {
+        const url = new URL(normalizedProductLink);
+        if (!["http:", "https:"].includes(url.protocol) || !url.hostname.includes(".")) {
+          nextErrors.productLink = "Проверьте формат ссылки.";
+        }
+      } catch {
+        nextErrors.productLink = "Проверьте формат ссылки.";
+      }
+    }
+
+    if (!currentForm.industry) {
+      nextErrors.industry = "Выберите отрасль.";
+    }
+
+    if (!currentForm.consent) {
+      nextErrors.consent = "Нужно согласие с политикой обработки персональных данных.";
+    }
+
+    return nextErrors;
   }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const normalizedForm = { ...form, productLink: normalizeUrl(form.productLink) };
+    const validationErrors = validate(normalizedForm);
+
+    if (Object.keys(validationErrors).length) {
+      setErrors(validationErrors);
+      setStatus("error");
+      return;
+    }
+
     setStatus("submitting");
 
-    window.sessionStorage.setItem("up-landing-last-application", JSON.stringify({ ...form, utm }));
+    window.sessionStorage.setItem("up-landing-last-application", JSON.stringify({ ...normalizedForm, utm }));
 
     setForm(initialState);
+    setErrors({});
     setStatus("idle");
     onSuccess?.();
   }
 
   return (
-    <form className="apply-form" onSubmit={submit}>
+    <form className="apply-form" onSubmit={submit} noValidate>
+      <p className="required-note">Все поля обязательны для заполнения.</p>
       <label>
-        <span>Название компании</span>
+        <span>Название компании <em aria-hidden="true">*</em></span>
         <input
           name="company"
           required
+          aria-invalid={Boolean(errors.company)}
+          aria-describedby={errors.company ? "company-error" : undefined}
           value={form.company}
           onChange={(e) => update("company", e.target.value)}
         />
+        {errors.company && <small className="field-error" id="company-error">{errors.company}</small>}
       </label>
 
       <label>
-        <span>Рабочий email</span>
+        <span>Рабочий email <em aria-hidden="true">*</em></span>
         <input
           required
           name="email"
           type="email"
           inputMode="email"
+          aria-invalid={Boolean(errors.email)}
+          aria-describedby={errors.email ? "email-error" : undefined}
           value={form.email}
           onChange={(e) => update("email", e.target.value)}
         />
+        {errors.email && <small className="field-error" id="email-error">{errors.email}</small>}
       </label>
 
       <label>
-        <span>Ссылка на сайт, продуктовую страницу или заполненный pitch deck</span>
+        <span>Ссылка на сайт, продуктовую страницу или заполненный pitch deck <em aria-hidden="true">*</em></span>
         <input
           required
           name="productLink"
-          type="url"
+          type="text"
           inputMode="url"
           placeholder="https://"
+          aria-invalid={Boolean(errors.productLink)}
+          aria-describedby={errors.productLink ? "product-link-error" : "product-link-hint"}
           value={form.productLink}
           onChange={(e) => update("productLink", e.target.value)}
+          onBlur={() => update("productLink", normalizeUrl(form.productLink))}
         />
+        <small className="field-hint" id="product-link-hint">Можно вставить адрес без https:// — мы добавим его автоматически.</small>
+        {errors.productLink && <small className="field-error" id="product-link-error">{errors.productLink}</small>}
       </label>
 
       <label>
-        <span>Отрасль</span>
+        <span>Отрасль <em aria-hidden="true">*</em></span>
         <select
           name="industry"
           required
+          aria-invalid={Boolean(errors.industry)}
+          aria-describedby={errors.industry ? "industry-error" : undefined}
           value={form.industry}
           onChange={(e) => update("industry", e.target.value)}
         >
@@ -114,10 +194,11 @@ export function ApplyForm({ industries, onSuccess }: Props) {
             </option>
           ))}
         </select>
+        {errors.industry && <small className="field-error" id="industry-error">{errors.industry}</small>}
       </label>
 
       <label>
-        <span>Резидент «Сколково»</span>
+        <span>Резидент «Сколково» <em aria-hidden="true">*</em></span>
         <select
           name="resident"
           value={form.resident}
@@ -134,6 +215,8 @@ export function ApplyForm({ industries, onSuccess }: Props) {
           required
           name="consent"
           type="checkbox"
+          aria-invalid={Boolean(errors.consent)}
+          aria-describedby={errors.consent ? "consent-error" : undefined}
           checked={form.consent}
           onChange={(e) => update("consent", e.target.checked)}
         />
@@ -143,6 +226,7 @@ export function ApplyForm({ industries, onSuccess }: Props) {
             политикой обработки персональных данных
           </a>
         </span>
+        {errors.consent && <small className="field-error" id="consent-error">{errors.consent}</small>}
       </label>
 
       <button className="submit-button" type="submit" disabled={status === "submitting"}>
@@ -151,7 +235,7 @@ export function ApplyForm({ industries, onSuccess }: Props) {
       </button>
       <p className="form-hint">Рассматриваем заявки в течение 5 рабочих дней. Результат — на email.</p>
 
-      {status === "error" && (
+      {status === "error" && !Object.keys(errors).length && (
         <p className="form-error">Не удалось отправить заявку. Попробуйте ещё раз или напишите нам напрямую.</p>
       )}
     </form>

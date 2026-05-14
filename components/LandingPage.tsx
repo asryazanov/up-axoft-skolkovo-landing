@@ -4,13 +4,24 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import {
   ArrowRight,
+  Bot,
+  BrainCircuit,
   CheckCircle2,
+  ClipboardCheck,
+  Download,
+  Factory,
   FileText,
   Gauge,
   Handshake,
   Menu,
+  MessageSquare,
   Microscope,
+  Radar,
+  Route,
+  ShieldCheck,
   Sparkles,
+  Target,
+  Trophy,
   WalletCards,
   X
 } from "lucide-react";
@@ -44,6 +55,8 @@ const steps = [
   ["Demo Day", "Финалисты представляют решения индустриальным заказчикам и партнёрам Axoft в формате живых презентаций."]
 ];
 
+const stepIcons = [ClipboardCheck, Target, Microscope, Route, Trophy];
+
 const programResults = [
   {
     title: "Деньги",
@@ -66,6 +79,8 @@ const programResults = [
     Icon: Gauge
   }
 ];
+
+const directionIcons = [BrainCircuit, Factory, MessageSquare, ShieldCheck, Bot, Radar];
 
 const navigationItems = [
   ["program", "Программа"],
@@ -220,7 +235,8 @@ export function LandingPage() {
 
       {showSuccess && (
         <div className="toast" role="status" aria-live="polite" tabIndex={-1} ref={toastRef}>
-          Заявка сохранена. Мы свяжемся с вами после первичной проверки.
+          <strong>Заявка сохранена</strong>
+          <span>Мы свяжемся с вами после первичной проверки.</span>
         </div>
       )}
 
@@ -244,9 +260,15 @@ export function LandingPage() {
               </article>
             ))}
           </div>
-          <button className="primary-link" type="button" onClick={openForm}>
-            Подать заявку <ArrowRight size={18} />
-          </button>
+          <div className="hero-actions-row">
+            <button className="primary-link" type="button" onClick={openForm}>
+              Подать заявку <ArrowRight size={18} />
+            </button>
+            <a className="template-download hero-template-link" href={pitchDeckTemplateHref} download>
+              <Download size={18} />
+              Скачать шаблон презентации
+            </a>
+          </div>
         </div>
       </section>
 
@@ -258,14 +280,22 @@ export function LandingPage() {
           <p className="partner-benefit">
             Для участников UP это доступ к пониманию спроса, партнёрской модели и требованиям корпоративных заказчиков.
           </p>
-          <button className="primary-link" type="button" onClick={openForm}>
+          <div className="partner-points" aria-label="Что Axoft даёт участнику">
+            {axoft.points.map((point) => (
+              <article key={point.title}>
+                <h3>{point.title}</h3>
+                <p>{point.text}</p>
+              </article>
+            ))}
+          </div>
+          <button className="secondary-link partner-cta" type="button" onClick={openForm}>
             Подать заявку <ArrowRight size={18} />
           </button>
         </div>
         <div className="partner-proof">
           <div className="partner-stats">
             {primaryAxoftStats.map((stat) => (
-              <div key={stat.label}>
+              <div className={stat.value === "3 300+" ? "is-featured" : undefined} key={stat.label}>
                 <strong>{stat.value}</strong>
                 <span>{stat.label}</span>
               </div>
@@ -289,9 +319,13 @@ export function LandingPage() {
         </div>
 
         <div className="direction-grid expanded">
-          {content.directions.map((direction) => (
+          {content.directions.map((direction, index) => {
+            const DirectionIcon = directionIcons[index] ?? Sparkles;
+            return (
             <article key={direction.name}>
-              <Sparkles size={21} />
+              <span className="direction-icon" aria-hidden="true">
+                <DirectionIcon size={22} />
+              </span>
               <h3>{direction.name}</h3>
               <p>{direction.detail}</p>
               {direction.examples?.length ? (
@@ -302,7 +336,8 @@ export function LandingPage() {
                 </div>
               ) : null}
             </article>
-          ))}
+            );
+          })}
         </div>
 
         <div className="criteria-panel">
@@ -324,7 +359,7 @@ export function LandingPage() {
               ))}
             </ul>
           </div>
-          <p>{criteria.note}</p>
+          <p className="criteria-note">{criteria.note}</p>
         </div>
       </section>
 
@@ -334,15 +369,23 @@ export function LandingPage() {
           <h2>От заявки до Demo Day — пять этапов</h2>
           <p>Точный календарь будет опубликован позднее. Первый цикл программы запланирован на II квартал 2026 года.</p>
         </div>
-        {steps.map(([title, text], index) => (
+        {steps.map(([title, text], index) => {
+          const StepIcon = stepIcons[index] ?? CheckCircle2;
+          return (
           <article className={index === steps.length - 1 ? "process-final" : undefined} key={title}>
             <strong>{String(index + 1).padStart(2, "0")}</strong>
             <div>
+              <span className="process-label">
+                <StepIcon size={16} />
+                Этап
+              </span>
               <h3>{title}</h3>
+              <span className="process-result">Результат</span>
               <p>{text}</p>
             </div>
           </article>
-        ))}
+          );
+        })}
       </section>
 
       <section className="section people">
@@ -393,7 +436,12 @@ export function LandingPage() {
                   );
                 }
                 return (
-                  <a key={document.name} href={href} download={href.endsWith(".pptx") ? true : undefined}>
+                  <a
+                    className={href.endsWith(".pptx") ? "document-featured" : undefined}
+                    key={document.name}
+                    href={href}
+                    download={href.endsWith(".pptx") ? true : undefined}
+                  >
                     <FileText size={18} />
                     {document.name}
                   </a>
@@ -402,6 +450,7 @@ export function LandingPage() {
             </div>
           ) : null}
         </div>
+        <p className="faq-cta-note">Первичная заявка занимает 3 минуты.</p>
         <button className="primary-link" type="button" onClick={openForm}>
           Подать заявку <ArrowRight size={18} />
         </button>

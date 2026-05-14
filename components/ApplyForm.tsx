@@ -130,6 +130,10 @@ export function ApplyForm({ industries, onSuccess }: Props) {
 
   return (
     <form className="apply-form" onSubmit={submit} noValidate>
+      <div className="form-progress" aria-label="Прогресс заполнения формы">
+        <span>Шаг 1 из 1</span>
+        <strong>6 полей</strong>
+      </div>
       <p className="required-note">Все поля обязательны для заполнения.</p>
       <label>
         <span>Название компании <em aria-hidden="true">*</em></span>
@@ -173,7 +177,9 @@ export function ApplyForm({ industries, onSuccess }: Props) {
           onChange={(e) => update("productLink", e.target.value)}
           onBlur={() => update("productLink", normalizeUrl(form.productLink))}
         />
-        <small className="field-hint" id="product-link-hint">Можно вставить адрес без https:// — мы добавим его автоматически.</small>
+        <small className="field-hint" id="product-link-hint">
+          Можно вставить сайт, презентацию или карточку продукта без https:// — мы добавим его автоматически.
+        </small>
         {errors.productLink && <small className="field-error" id="product-link-error">{errors.productLink}</small>}
       </label>
 

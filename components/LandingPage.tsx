@@ -87,7 +87,7 @@ export function LandingPage() {
         <div className="program-panel" id="program">
           <p className="eyebrow">О программе</p>
           <p className="hero-notice">Первый цикл — II квартал 2026 г.</p>
-          <h1>UP помогает технологическим продуктам быстрее выйти к корпоративному рынку</h1>
+          <h1>Подготовьте продукт к корпоративным продажам через канал Axoft</h1>
           <p>
             Это программа для команд, которым важно не просто выступить на питче, а получить понятный путь к деньгам,
             экспертизе, партнёрам и первым рыночным проверкам вместе с Axoft и экосистемой «Сколково».
@@ -111,6 +111,9 @@ export function LandingPage() {
           <p className="eyebrow">{axoft.kicker}</p>
           <h2>{axoft.title}</h2>
           <p>{axoft.lead}</p>
+          <p className="partner-benefit">
+            Для участников UP это доступ к пониманию спроса, партнёрской модели и требованиям корпоративных заказчиков.
+          </p>
           <button className="primary-link" type="button" onClick={openForm}>
             Подать заявку <ArrowRight size={18} />
           </button>
@@ -236,6 +239,15 @@ export function LandingPage() {
               <h3>Документы</h3>
               {documents.map((document) => {
                 const href = document.href.startsWith("/") ? `${assetBasePath}${document.href}` : document.href;
+                if (document.status) {
+                  return (
+                    <span className="document-soon" key={document.name}>
+                      <FileText size={18} />
+                      {document.name}
+                      <small>{document.status}</small>
+                    </span>
+                  );
+                }
                 return (
                   <a key={document.name} href={href}>
                     <FileText size={18} />

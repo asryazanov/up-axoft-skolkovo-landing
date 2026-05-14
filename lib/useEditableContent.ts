@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { siteContent, type SiteContent } from "@/data/site";
 
-const STORAGE_KEY = "up-landing-content";
+const STORAGE_KEY = "up-landing-content-v2";
 
 export function useEditableContent() {
   const [content, setContent] = useState<SiteContent>(siteContent);

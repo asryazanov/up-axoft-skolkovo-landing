@@ -14,6 +14,7 @@ type Props = {
 type FormState = {
   company: string;
   email: string;
+  productLink: string;
   industry: string;
   resident: "Да" | "Нет" | "В процессе оформления";
   consent: boolean;
@@ -22,6 +23,7 @@ type FormState = {
 const initialState: FormState = {
   company: "",
   email: "",
+  productLink: "",
   industry: "",
   resident: "Нет",
   consent: false
@@ -81,6 +83,19 @@ export function ApplyForm({ industries, onSuccess }: Props) {
           inputMode="email"
           value={form.email}
           onChange={(e) => update("email", e.target.value)}
+        />
+      </label>
+
+      <label>
+        <span>Ссылка на сайт, продукт или презентацию</span>
+        <input
+          required
+          name="productLink"
+          type="url"
+          inputMode="url"
+          placeholder="https://"
+          value={form.productLink}
+          onChange={(e) => update("productLink", e.target.value)}
         />
       </label>
 

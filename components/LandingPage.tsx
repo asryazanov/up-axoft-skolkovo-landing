@@ -57,6 +57,9 @@ export function LandingPage() {
     setShowSuccess(true);
   }
 
+  const primaryAxoftStats = axoft.stats.slice(0, 4);
+  const secondaryAxoftStats = axoft.stats.slice(4);
+
   return (
     <main>
       <header className="site-header">
@@ -67,6 +70,7 @@ export function LandingPage() {
         </a>
         <nav>
           <a href="#program">Программа</a>
+          <a href="#axoft">Axoft</a>
           <a href="#directions">Направления</a>
           <a href="#faq">FAQ</a>
         </nav>
@@ -100,20 +104,35 @@ export function LandingPage() {
             Подать заявку <ArrowRight size={18} />
           </button>
         </div>
+      </section>
 
-        <aside className="partner-panel" aria-label="Партнёр Axoft">
+      <section className="partner-screen" id="axoft" aria-label="Партнёр Axoft">
+        <div className="partner-panel">
           <p className="eyebrow">{axoft.kicker}</p>
           <h2>{axoft.title}</h2>
           <p>{axoft.lead}</p>
+          <button className="primary-link" type="button" onClick={openForm}>
+            Подать заявку <ArrowRight size={18} />
+          </button>
+        </div>
+        <div className="partner-proof">
           <div className="partner-stats">
-            {axoft.stats.map((stat) => (
+            {primaryAxoftStats.map((stat) => (
               <div key={stat.label}>
                 <strong>{stat.value}</strong>
                 <span>{stat.label}</span>
               </div>
             ))}
           </div>
-        </aside>
+          <div className="partner-secondary-stats">
+            {secondaryAxoftStats.map((stat) => (
+              <span key={stat.label}>
+                <strong>{stat.value}</strong>
+                {stat.label}
+              </span>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section className="selection-screen" id="directions">

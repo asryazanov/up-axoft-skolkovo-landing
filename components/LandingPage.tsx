@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
-import { ArrowRight, CheckCircle2, ExternalLink, Sparkles } from "lucide-react";
+import { ArrowRight, CheckCircle2, FileText, Sparkles, X } from "lucide-react";
 import { ApplyForm } from "@/components/ApplyForm";
 import { useEditableContent } from "@/lib/useEditableContent";
 import { siteContent } from "@/data/site";
@@ -24,16 +25,37 @@ const evaluators = [
 ];
 
 const steps = [
-  ["Заявка", "Заполните форму — в течение 2 рабочих дней придёт подтверждение о получении."],
-  ["Первичная оценка", "Эксперты программы проверяют релевантность направления, зрелость продукта и потенциал для канала."],
-  ["Open Day", "Прошедшие отбор получают приглашение: знакомство с командой программы, критериями и маршрутом."],
+  ["Заявка", "Короткая форма фиксирует направление, статус резидентства и базовую информацию о компании."],
+  ["Формальный отбор", "Проверяем полноту заявки, соответствие направлениям программы и права на разработку."],
+  ["Экспертная оценка", "Смотрим зрелость продукта, B2B-потенциал и готовность к работе с партнёрским каналом."],
   ["Сопровождение по треку", "Экспертиза продукта, упаковка решения, подготовка партнёрских и маркетинговых материалов."],
   ["Demo Day", "Финалисты представляют решения индустриальным заказчикам и партнёрам Axoft в формате живых презентаций."]
+];
+
+const programResults = [
+  ["Деньги", "Маршрут к грантам, пилотам и коммерческим возможностям там, где продукт уже готов к рынку."],
+  ["Экспертиза", "Разбор продукта, позиционирования, зрелости и готовности к корпоративным внедрениям."],
+  ["Партнёры", "Понимание, как продукт может попасть в канал продаж и стать понятным партнёрам Axoft."],
+  ["Скорость", "Фокус на действиях после отбора: быстрее проверить гипотезы, упаковку и путь к заказчикам."]
 ];
 
 export function LandingPage() {
   const content = useEditableContent();
   const axoft = content.axoft ?? siteContent.axoft;
+  const criteria = content.criteria ?? siteContent.criteria;
+  const documents = content.documents ?? siteContent.documents;
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  function openForm() {
+    setIsFormOpen(true);
+    setShowSuccess(false);
+  }
+
+  function completeForm() {
+    setIsFormOpen(false);
+    setShowSuccess(true);
+  }
 
   return (
     <main>
@@ -46,120 +68,105 @@ export function LandingPage() {
         <nav>
           <a href="#program">Программа</a>
           <a href="#directions">Направления</a>
-          <a href="#form">Заявка</a>
+          <a href="#faq">FAQ</a>
         </nav>
-        <a className="header-cta" href="#form">Подать заявку</a>
+        <button className="header-cta" type="button" onClick={openForm}>Подать заявку</button>
       </header>
 
-      <section className="hero" id="top">
-        <div className="hero-copy">
-          <p className="eyebrow">{content.hero.label}</p>
-          {content.hero.notice && (
-            <p className="hero-notice">{content.hero.notice}</p>
-          )}
-          <h1>
-            <span>UP</span>: {content.hero.title.replace("UP: ", "")}
-          </h1>
-          <p>{content.hero.lead}</p>
-          <div className="hero-actions">
-            <a className="primary-link" href="#form">
-              Подать заявку <ArrowRight size={18} />
-            </a>
-          </div>
+      {showSuccess && (
+        <div className="toast" role="status">
+          Заявка сохранена. Мы свяжемся с вами после первичной проверки.
         </div>
-        <div className="hero-panel" aria-label="Ключевые показатели">
-          {content.hero.stats.map((stat) => (
-            <div key={stat.label}>
-              <strong>{stat.value}</strong>
-              <span>{stat.label}</span>
-            </div>
-          ))}
-        </div>
-      </section>
+      )}
 
-      <section className="section intro" id="program">
-        <div>
+      <section className="first-screen" id="top">
+        <div className="program-panel" id="program">
           <p className="eyebrow">О программе</p>
-          <h2>Чем UP отличается от обычного акселератора</h2>
-        </div>
-        <div className="intro-copy">
+          <p className="hero-notice">Первый цикл — II квартал 2026 г.</p>
+          <h1>UP помогает технологическим продуктам быстрее выйти к корпоративному рынку</h1>
           <p>
-            Большинство акселераторов заканчиваются питчем и сертификатом. Вы три месяца готовите презентацию,
-            выходите на сцену, получаете аплодисменты — и возвращаетесь к тому, с чего начали: без контрактов,
-            без понимания, как именно ваш продукт попадёт к корпоративным заказчикам.
+            Это программа для команд, которым важно не просто выступить на питче, а получить понятный путь к деньгам,
+            экспертизе, партнёрам и первым рыночным проверкам вместе с Axoft и экосистемой «Сколково».
           </p>
-          <p>UP устроен иначе. Это не про питч. Это про то, что будет после.</p>
+          <div className="result-grid">
+            {programResults.map(([title, text]) => (
+              <article key={title}>
+                <strong>{title}</strong>
+                <span>{text}</span>
+              </article>
+            ))}
+          </div>
+          <button className="primary-link" type="button" onClick={openForm}>
+            Подать заявку <ArrowRight size={18} />
+          </button>
         </div>
-      </section>
 
-      <section className="section axoft-proof">
-        <div className="axoft-proof-main">
+        <aside className="partner-panel" aria-label="Партнёр Axoft">
           <p className="eyebrow">{axoft.kicker}</p>
           <h2>{axoft.title}</h2>
           <p>{axoft.lead}</p>
-          <a className="primary-link" href="#form">
-            Подать заявку <ArrowRight size={18} />
-          </a>
-        </div>
-        <div className="axoft-stats" aria-label="Ключевые показатели Axoft">
-          {axoft.stats.map((stat) => (
-            <div key={stat.label}>
-              <strong>{stat.value}</strong>
-              <span>{stat.label}</span>
-            </div>
-          ))}
-        </div>
-        <div className="axoft-points" aria-label="Как Axoft помогает участникам UP">
-          {axoft.points.map((point) => (
-            <article key={point.title}>
-              <Sparkles size={18} />
-              <div>
-                <h3>{point.title}</h3>
-                <p>{point.text}</p>
+          <div className="partner-stats">
+            {axoft.stats.map((stat) => (
+              <div key={stat.label}>
+                <strong>{stat.value}</strong>
+                <span>{stat.label}</span>
               </div>
-            </article>
-          ))}
-        </div>
+            ))}
+          </div>
+        </aside>
       </section>
 
-      <section className="section tracks">
-        {content.tracks.map((track) => (
-          <article className="track-card" key={track.name}>
-            <span>{track.audience}</span>
-            <h3>{track.name}</h3>
-            <p>{track.description}</p>
-            <ul>
-              {track.points.map((point) => (
-                <li key={point}>
-                  <CheckCircle2 size={17} />
-                  {point}
-                </li>
-              ))}
-            </ul>
-          </article>
-        ))}
-      </section>
-
-      <section className="section directions" id="directions">
+      <section className="selection-screen" id="directions">
         <div className="section-heading">
-          <p className="eyebrow">Приоритетные направления</p>
-          <h2>Ключевой фокус — промышленность и зрелые ИТ-категории</h2>
+          <p className="eyebrow">Отбор</p>
+          <h2>Направления отбора и базовые критерии</h2>
         </div>
-        <div className="direction-grid">
+
+        <div className="direction-grid expanded">
           {content.directions.map((direction) => (
             <article key={direction.name}>
               <Sparkles size={21} />
               <h3>{direction.name}</h3>
               <p>{direction.detail}</p>
+              {direction.examples?.length ? (
+                <div className="example-tags">
+                  {direction.examples.map((example) => (
+                    <span key={example}>{example}</span>
+                  ))}
+                </div>
+              ) : null}
             </article>
           ))}
+        </div>
+
+        <div className="criteria-panel">
+          <div>
+            <p className="eyebrow">Критерии отбора</p>
+            <h3>Обязательные</h3>
+            <ul>
+              {criteria.required.map((item) => (
+                <li key={item}><CheckCircle2 size={18} />{item}</li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <p className="eyebrow">Желательные</p>
+            <h3>Повышают релевантность заявки</h3>
+            <ul>
+              {criteria.preferred.map((item) => (
+                <li key={item}><CheckCircle2 size={18} />{item}</li>
+              ))}
+            </ul>
+          </div>
+          <p>{criteria.note}</p>
         </div>
       </section>
 
       <section className="section process">
         <div className="section-heading">
-          <p className="eyebrow">Структура программы</p>
-          <h2>От заявки до Demo Day — пять шагов</h2>
+          <p className="eyebrow">Структура и сроки</p>
+          <h2>От заявки до Demo Day — пять этапов</h2>
+          <p>Точный календарь будет опубликован позднее. Первый цикл программы запланирован на II квартал 2026 года.</p>
         </div>
         {steps.map(([title, text], index) => (
           <article className={index === steps.length - 1 ? "process-final" : undefined} key={title}>
@@ -172,26 +179,16 @@ export function LandingPage() {
         ))}
       </section>
 
-      <section className="section services">
-        <div className="section-heading">
-          <p className="eyebrow">Сервисы «Сколково»</p>
-          <h2>Возможности экосистемы для участников</h2>
-        </div>
-        {content.services.map((service) => (
-          <a key={service.name} href={service.href} target="_blank" rel="noreferrer">
-            <ExternalLink size={20} />
-            <strong>{service.name}</strong>
-            <span>{service.description}</span>
-          </a>
-        ))}
-      </section>
-
       <section className="section people">
         <div className="section-heading">
           <p className="eyebrow">Оценка заявок</p>
-          <h2>Кто принимает решение</h2>
+          <h2>Кто смотрит проекты</h2>
+          <p>
+            Заявки проходят формальный отбор и экспертную оценку. Решения смотрят специалисты Axoft,
+            технологические эксперты «Сколково» и отраслевые менторы.
+          </p>
         </div>
-        <div className="people-grid">
+        <div className="people-grid compact">
           {evaluators.map((evaluator) => (
             <article key={evaluator.role}>
               <h3>{evaluator.role}</h3>
@@ -201,32 +198,61 @@ export function LandingPage() {
         </div>
       </section>
 
-      <section className="form-section" id="form">
-        <div className="form-copy">
-          <p className="eyebrow">Форма заявки</p>
-          <h2>Подайте заявку — это займёт 3 минуты</h2>
-          <p>
-            Заполните форму — мы проверим соответствие критериям программы
-            и свяжемся с вами в течение 2 рабочих дней.
-          </p>
-        </div>
-        <ApplyForm industries={content.industries} />
-      </section>
-
-      <section className="section faq">
+      <section className="section faq" id="faq">
         <div className="section-heading">
-          <p className="eyebrow">FAQ</p>
+          <p className="eyebrow">FAQ и документы</p>
           <h2>Ответы на частые вопросы</h2>
         </div>
-        <div className="faq-list">
-          {content.faq.map((item) => (
-            <details key={item.question}>
-              <summary>{item.question}</summary>
-              <p>{item.answer}</p>
-            </details>
-          ))}
+        <div className="faq-layout">
+          <div className="faq-list">
+            {content.faq.map((item) => (
+              <details key={item.question}>
+                <summary>{item.question}</summary>
+                <p>{item.answer}</p>
+              </details>
+            ))}
+          </div>
+          {documents.length ? (
+            <div className="document-list">
+              <h3>Документы</h3>
+              {documents.map((document) => {
+                const href = document.href.startsWith("/") ? `${assetBasePath}${document.href}` : document.href;
+                return (
+                  <a key={document.name} href={href}>
+                    <FileText size={18} />
+                    {document.name}
+                  </a>
+                );
+              })}
+            </div>
+          ) : null}
         </div>
+        <button className="primary-link" type="button" onClick={openForm}>
+          Подать заявку <ArrowRight size={18} />
+        </button>
       </section>
+
+      {isFormOpen && (
+        <div className="modal-backdrop" role="presentation" onMouseDown={() => setIsFormOpen(false)}>
+          <div
+            className="application-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="application-title"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <button className="modal-close" type="button" onClick={() => setIsFormOpen(false)} aria-label="Закрыть форму">
+              <X size={20} />
+            </button>
+            <div className="modal-copy">
+              <p className="eyebrow">Форма заявки</p>
+              <h2 id="application-title">Подайте заявку — это займёт 3 минуты</h2>
+              <p>Мы проверим соответствие критериям программы и свяжемся с вами после первичной оценки.</p>
+            </div>
+            <ApplyForm industries={content.industries} onSuccess={completeForm} />
+          </div>
+        </div>
+      )}
 
       <footer>
         <div className="brand-pair">

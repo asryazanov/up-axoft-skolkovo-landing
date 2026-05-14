@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
-import { useRouter } from "next/navigation";
 import { Send } from "lucide-react";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 type Props = {
   industries: string[];
+  onSuccess?: () => void;
 };
 
 type FormState = {
@@ -27,8 +27,7 @@ const initialState: FormState = {
   consent: false
 };
 
-export function ApplyForm({ industries }: Props) {
-  const router = useRouter();
+export function ApplyForm({ industries, onSuccess }: Props) {
   const [form, setForm] = useState<FormState>(initialState);
   const [status, setStatus] = useState<"idle" | "submitting" | "error">("idle");
   const [utm, setUtm] = useState({
@@ -56,7 +55,9 @@ export function ApplyForm({ industries }: Props) {
 
     window.sessionStorage.setItem("up-landing-last-application", JSON.stringify({ ...form, utm }));
 
-    router.push("/thanks");
+    setForm(initialState);
+    setStatus("idle");
+    onSuccess?.();
   }
 
   return (

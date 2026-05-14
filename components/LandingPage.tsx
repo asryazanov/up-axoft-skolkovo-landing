@@ -119,25 +119,32 @@ export function LandingPage() {
   }
 
   useEffect(() => {
-    const sections = navigationItems
-      .map(([id]) => document.getElementById(id))
-      .filter((section): section is HTMLElement => Boolean(section));
+    function updateActiveSection() {
+      const headerOffset = 120;
+      const currentPosition = window.scrollY + headerOffset;
+      const sections = navigationItems
+        .map(([id]) => document.getElementById(id))
+        .filter((section): section is HTMLElement => Boolean(section));
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      let currentSection = sections[0]?.id ?? "program";
 
-        if (visible?.target.id) {
-          setActiveSection(visible.target.id);
+      for (const section of sections) {
+        if (section.offsetTop <= currentPosition) {
+          currentSection = section.id;
         }
-      },
-      { rootMargin: "-35% 0px -50% 0px", threshold: [0.1, 0.35, 0.6] }
-    );
+      }
 
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
+      setActiveSection(currentSection);
+    }
+
+    updateActiveSection();
+    window.addEventListener("scroll", updateActiveSection, { passive: true });
+    window.addEventListener("resize", updateActiveSection);
+
+    return () => {
+      window.removeEventListener("scroll", updateActiveSection);
+      window.removeEventListener("resize", updateActiveSection);
+    };
   }, []);
 
   useEffect(() => {
@@ -195,7 +202,10 @@ export function LandingPage() {
         href={`#${id}`}
         className={activeSection === id ? "is-active" : undefined}
         aria-current={activeSection === id ? "location" : undefined}
-        onClick={() => setIsMobileNavOpen(false)}
+        onClick={() => {
+          setActiveSection(id);
+          setIsMobileNavOpen(false);
+        }}
       >
         {label}
       </a>

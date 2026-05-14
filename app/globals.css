@@ -311,11 +311,41 @@ h1 span {
 }
 
 .first-screen {
+  position: relative;
   min-height: calc(100vh - 76px);
   display: grid;
   align-items: center;
   padding: clamp(14px, 2vw, 28px) clamp(18px, 5vw, 72px);
-  background: var(--soft);
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(246, 248, 248, 0.88) 72%, rgba(30, 40, 73, 0.08)),
+    radial-gradient(circle at 12% 22%, rgba(177, 236, 82, 0.3), transparent 28%),
+    radial-gradient(circle at 86% 18%, rgba(0, 173, 239, 0.2), transparent 30%),
+    radial-gradient(circle at 74% 82%, rgba(0, 178, 124, 0.16), transparent 32%),
+    var(--soft);
+}
+
+.first-screen::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(30, 40, 73, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 40, 73, 0.045) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(180deg, transparent, black 18%, black 74%, transparent);
+  content: "";
+}
+
+.first-screen::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 96px;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(246, 248, 248, 0), rgba(30, 40, 73, 0.14));
+  content: "";
 }
 
 .partner-screen {
@@ -339,6 +369,8 @@ h1 span {
 }
 
 .program-panel {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -346,7 +378,13 @@ h1 span {
   width: 100%;
   max-width: 1280px;
   padding: clamp(22px, 2.45vw, 34px);
-  box-shadow: var(--shadow);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.9)),
+    var(--white);
+  box-shadow:
+    0 24px 80px rgba(30, 40, 73, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(14px);
 }
 
 .program-panel h1 {

@@ -262,14 +262,27 @@ textarea:focus-visible {
 }
 
 .eyebrow {
-  margin: 0 0 14px;
-  color: var(--mint);
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 30px;
+  margin: 0 0 16px;
+  padding: 6px 11px;
+  border: 1px solid rgba(0, 173, 239, 0.28);
+  border-radius: 999px;
+  background: rgba(0, 173, 239, 0.1);
+  color: #00758f;
   font-size: 13px;
   font-weight: 800;
+  line-height: 1;
   text-transform: uppercase;
 }
 
-.hero .eyebrow {
+.hero .eyebrow,
+.partner-panel .eyebrow,
+.process .eyebrow {
+  border-color: rgba(177, 236, 82, 0.36);
+  background: rgba(177, 236, 82, 0.12);
   color: var(--green);
 }
 

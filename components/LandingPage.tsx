@@ -96,8 +96,12 @@ export function LandingPage() {
   const documents = content.documents ?? siteContent.documents;
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [isApplicationComplete, setIsApplicationComplete] = useState(false);
   const [activeSection, setActiveSection] = useState("program");
   const [showSuccess, setShowSuccess] = useState(false);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  const [expandedDirections, setExpandedDirections] = useState<Record<string, boolean>>({});
+  const [scrollProgress, setScrollProgress] = useState(0);
   const modalRef = useRef<HTMLDivElement>(null);
   const toastRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
@@ -106,6 +110,7 @@ export function LandingPage() {
     previousFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     setIsFormOpen(true);
     setIsMobileNavOpen(false);
+    setIsApplicationComplete(false);
     setShowSuccess(false);
   }
 
@@ -114,7 +119,7 @@ export function LandingPage() {
   }
 
   function completeForm() {
-    setIsFormOpen(false);
+    setIsApplicationComplete(true);
     setShowSuccess(true);
   }
 
@@ -135,6 +140,10 @@ export function LandingPage() {
       }
 
       setActiveSection(currentSection);
+
+      const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = scrollableHeight > 0 ? (window.scrollY / scrollableHeight) * 100 : 0;
+      setScrollProgress(Math.min(100, Math.max(0, progress)));
     }
 
     updateActiveSection();
@@ -214,6 +223,7 @@ export function LandingPage() {
 
   return (
     <main>
+      <a className="skip-link" href="#program">Перейти к содержанию</a>
       <header className="site-header">
         <a className="brand-pair" href="#top" aria-label="UP Axoft Сколково">
           <Image src={`${assetBasePath}/logos/skolkovo.png`} alt="Сколково" width={146} height={41} priority />
@@ -242,6 +252,9 @@ export function LandingPage() {
           {renderNavLinks()}
         </nav>
       </header>
+      <div className="scroll-progress" aria-hidden="true">
+        <span style={{ transform: `scaleX(${scrollProgress / 100})` }} />
+      </div>
 
       {showSuccess && (
         <div className="toast" role="status" aria-live="polite" tabIndex={-1} ref={toastRef}>
@@ -331,6 +344,7 @@ export function LandingPage() {
         <div className="direction-grid expanded">
           {content.directions.map((direction, index) => {
             const DirectionIcon = directionIcons[index] ?? Sparkles;
+            const isExpanded = Boolean(expandedDirections[direction.name]);
             return (
             <article key={direction.name}>
               <span className="direction-icon" aria-hidden="true">
@@ -340,9 +354,29 @@ export function LandingPage() {
               <p>{direction.detail}</p>
               {direction.examples?.length ? (
                 <div className="example-tags">
-                  {direction.examples.map((example) => (
-                    <span key={example}>{example}</span>
+                  {direction.examples.map((example, exampleIndex) => (
+                    <span
+                      className={!isExpanded && exampleIndex > 3 ? "is-collapsed-mobile" : undefined}
+                      key={example}
+                    >
+                      {example}
+                    </span>
                   ))}
+                  {direction.examples.length > 4 ? (
+                    <button
+                      className="example-toggle"
+                      type="button"
+                      aria-expanded={isExpanded}
+                      onClick={() =>
+                        setExpandedDirections((current) => ({
+                          ...current,
+                          [direction.name]: !current[direction.name]
+                        }))
+                      }
+                    >
+                      {isExpanded ? "Скрыть" : `Показать ещё ${direction.examples.length - 4}`}
+                    </button>
+                  ) : null}
                 </div>
               ) : null}
             </article>
@@ -424,9 +458,16 @@ export function LandingPage() {
         </div>
         <div className="faq-layout">
           <div className="faq-list">
-            {content.faq.map((item) => (
-              <details key={item.question}>
-                <summary>{item.question}</summary>
+            {content.faq.map((item, index) => (
+              <details key={item.question} open={openFaqIndex === index}>
+                <summary
+                  onClick={(event) => {
+                    event.preventDefault();
+                    setOpenFaqIndex((current) => (current === index ? null : index));
+                  }}
+                >
+                  {item.question}
+                </summary>
                 <p>{item.answer}</p>
               </details>
             ))}
@@ -478,19 +519,43 @@ export function LandingPage() {
             <button className="modal-close" type="button" onClick={closeForm} aria-label="Закрыть форму">
               <X size={20} />
             </button>
-            <div className="modal-copy">
-              <p className="eyebrow">Форма заявки</p>
-              <h2 id="application-title">Подайте заявку — это займёт 3 минуты</h2>
-              <p>Мы проверим соответствие критериям программы и свяжемся с вами после первичной оценки.</p>
-              <a className="template-download" href={pitchDeckTemplateHref} download>
-                <FileText size={18} />
-                Скачать шаблон презентации
-              </a>
-            </div>
-            <ApplyForm industries={content.industries} onSuccess={completeForm} />
+            {isApplicationComplete ? (
+              <div className="application-success">
+                <CheckCircle2 size={46} />
+                <p className="eyebrow">Заявка сохранена</p>
+                <h2 id="application-title">Спасибо, заявка принята</h2>
+                <p>Мы сохранили данные локально в демо-версии и свяжемся с вами после первичной проверки.</p>
+                <button className="primary-link" type="button" onClick={closeForm}>
+                  Вернуться на лендинг
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="modal-copy">
+                  <p className="eyebrow">Форма заявки</p>
+                  <h2 id="application-title">Подайте заявку — это займёт 3 минуты</h2>
+                  <p>Мы проверим соответствие критериям программы и свяжемся с вами после первичной оценки.</p>
+                  <a className="template-download" href={pitchDeckTemplateHref} download>
+                    <FileText size={18} />
+                    Скачать шаблон презентации
+                  </a>
+                </div>
+                <ApplyForm industries={content.industries} onSuccess={completeForm} />
+              </>
+            )}
           </div>
         </div>
       )}
+
+      <div className="mobile-sticky-cta" aria-label="Быстрые действия">
+        <button type="button" onClick={openForm}>
+          Подать заявку
+          <ArrowRight size={18} />
+        </button>
+        <a href={pitchDeckTemplateHref} download aria-label="Скачать шаблон презентации">
+          <Download size={18} />
+        </a>
+      </div>
 
       <footer>
         <div className="brand-pair">

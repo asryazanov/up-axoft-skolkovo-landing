@@ -29,6 +29,9 @@ const initialState: FormState = {
   consent: false
 };
 
+const draftStorageKey = "up-landing-application-draft";
+const lastApplicationStorageKey = "up-landing-last-application";
+
 type FormErrors = Partial<Record<keyof FormState, string>>;
 
 function normalizeUrl(value: string) {
@@ -44,6 +47,8 @@ export function ApplyForm({ industries, onSuccess }: Props) {
   const [form, setForm] = useState<FormState>(initialState);
   const [status, setStatus] = useState<"idle" | "submitting" | "error">("idle");
   const [errors, setErrors] = useState<FormErrors>({});
+  const [touched, setTouched] = useState<Partial<Record<keyof FormState, boolean>>>({});
+  const [hasSubmitted, setHasSubmitted] = useState(false);
   const [utm, setUtm] = useState({
     utm_source: null as string | null,
     utm_medium: null as string | null,
@@ -51,6 +56,15 @@ export function ApplyForm({ industries, onSuccess }: Props) {
   });
 
   useEffect(() => {
+    const savedDraft = window.sessionStorage.getItem(draftStorageKey);
+    if (savedDraft) {
+      try {
+        setForm({ ...initialState, ...JSON.parse(savedDraft) });
+      } catch {
+        window.sessionStorage.removeItem(draftStorageKey);
+      }
+    }
+
     const params = new URLSearchParams(window.location.search);
     setUtm({
       utm_source: params.get("utm_source"),
@@ -59,12 +73,47 @@ export function ApplyForm({ industries, onSuccess }: Props) {
     });
   }, []);
 
+  useEffect(() => {
+    const hasDraft = Object.entries(form).some(([key, value]) => value !== initialState[key as keyof FormState]);
+
+    if (hasDraft) {
+      window.sessionStorage.setItem(draftStorageKey, JSON.stringify(form));
+    } else {
+      window.sessionStorage.removeItem(draftStorageKey);
+    }
+  }, [form]);
+
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
-    setForm((current) => ({ ...current, [key]: value }));
+    setForm((current) => {
+      const nextForm = { ...current, [key]: value };
+      if (touched[key] || hasSubmitted) {
+        const fieldError = validate(nextForm)[key];
+        setErrors((currentErrors) => {
+          const nextErrors = { ...currentErrors };
+          if (fieldError) {
+            nextErrors[key] = fieldError;
+          } else {
+            delete nextErrors[key];
+          }
+          return nextErrors;
+        });
+      }
+      return nextForm;
+    });
+  }
+
+  function markTouched<K extends keyof FormState>(key: K, value?: FormState[K]) {
+    const nextForm = value === undefined ? form : { ...form, [key]: value };
+    const fieldError = validate(nextForm)[key];
+
+    setTouched((current) => ({ ...current, [key]: true }));
     setErrors((current) => {
-      if (!current[key]) return current;
       const next = { ...current };
-      delete next[key];
+      if (fieldError) {
+        next[key] = fieldError;
+      } else {
+        delete next[key];
+      }
       return next;
     });
   }
@@ -111,6 +160,15 @@ export function ApplyForm({ industries, onSuccess }: Props) {
     event.preventDefault();
     const normalizedForm = { ...form, productLink: normalizeUrl(form.productLink) };
     const validationErrors = validate(normalizedForm);
+    setHasSubmitted(true);
+    setTouched({
+      company: true,
+      email: true,
+      productLink: true,
+      industry: true,
+      resident: true,
+      consent: true
+    });
 
     if (Object.keys(validationErrors).length) {
       setErrors(validationErrors);
@@ -120,10 +178,13 @@ export function ApplyForm({ industries, onSuccess }: Props) {
 
     setStatus("submitting");
 
-    window.sessionStorage.setItem("up-landing-last-application", JSON.stringify({ ...normalizedForm, utm }));
+    window.sessionStorage.setItem(lastApplicationStorageKey, JSON.stringify({ ...normalizedForm, utm }));
+    window.sessionStorage.removeItem(draftStorageKey);
 
     setForm(initialState);
     setErrors({});
+    setTouched({});
+    setHasSubmitted(false);
     setStatus("idle");
     onSuccess?.();
   }
@@ -144,6 +205,7 @@ export function ApplyForm({ industries, onSuccess }: Props) {
           aria-describedby={errors.company ? "company-error" : undefined}
           value={form.company}
           onChange={(e) => update("company", e.target.value)}
+          onBlur={() => markTouched("company")}
         />
         {errors.company && <small className="field-error" id="company-error">{errors.company}</small>}
       </label>
@@ -159,6 +221,7 @@ export function ApplyForm({ industries, onSuccess }: Props) {
           aria-describedby={errors.email ? "email-error" : undefined}
           value={form.email}
           onChange={(e) => update("email", e.target.value)}
+          onBlur={() => markTouched("email")}
         />
         {errors.email && <small className="field-error" id="email-error">{errors.email}</small>}
       </label>
@@ -175,7 +238,11 @@ export function ApplyForm({ industries, onSuccess }: Props) {
           aria-describedby={errors.productLink ? "product-link-error" : "product-link-hint"}
           value={form.productLink}
           onChange={(e) => update("productLink", e.target.value)}
-          onBlur={() => update("productLink", normalizeUrl(form.productLink))}
+          onBlur={() => {
+            const normalized = normalizeUrl(form.productLink);
+            update("productLink", normalized);
+            markTouched("productLink", normalized);
+          }}
         />
         <small className="field-hint" id="product-link-hint">
           Можно вставить сайт, презентацию или карточку продукта без https:// — мы добавим его автоматически.
@@ -192,6 +259,7 @@ export function ApplyForm({ industries, onSuccess }: Props) {
           aria-describedby={errors.industry ? "industry-error" : undefined}
           value={form.industry}
           onChange={(e) => update("industry", e.target.value)}
+          onBlur={() => markTouched("industry")}
         >
           <option value="">Выберите отрасль</option>
           {industries.map((industry) => (
@@ -209,6 +277,7 @@ export function ApplyForm({ industries, onSuccess }: Props) {
           name="resident"
           value={form.resident}
           onChange={(e) => update("resident", e.target.value as FormState["resident"])}
+          onBlur={() => markTouched("resident")}
         >
           <option>Да</option>
           <option>Нет</option>
@@ -224,7 +293,10 @@ export function ApplyForm({ industries, onSuccess }: Props) {
           aria-invalid={Boolean(errors.consent)}
           aria-describedby={errors.consent ? "consent-error" : undefined}
           checked={form.consent}
-          onChange={(e) => update("consent", e.target.checked)}
+          onChange={(e) => {
+            update("consent", e.target.checked);
+            markTouched("consent", e.target.checked);
+          }}
         />
         <span>
           Согласен с{" "}
@@ -235,15 +307,17 @@ export function ApplyForm({ industries, onSuccess }: Props) {
         {errors.consent && <small className="field-error" id="consent-error">{errors.consent}</small>}
       </label>
 
-      <button className="submit-button" type="submit" disabled={status === "submitting"}>
-        <Send size={18} />
-        {status === "submitting" ? "Отправляем…" : "Подать заявку"}
-      </button>
-      <p className="form-hint">Рассматриваем заявки в течение 5 рабочих дней. Результат — на email.</p>
+      <div className="form-submit-bar">
+        <button className="submit-button" type="submit" disabled={status === "submitting"}>
+          <Send size={18} />
+          {status === "submitting" ? "Отправляем…" : "Подать заявку"}
+        </button>
+        <p className="form-hint">Рассматриваем заявки в течение 5 рабочих дней. Результат — на email.</p>
 
-      {status === "error" && !Object.keys(errors).length && (
-        <p className="form-error">Не удалось отправить заявку. Попробуйте ещё раз или напишите нам напрямую.</p>
-      )}
+        {status === "error" && !Object.keys(errors).length && (
+          <p className="form-error">Не удалось отправить заявку. Попробуйте ещё раз или напишите нам напрямую.</p>
+        )}
+      </div>
     </form>
   );
 }

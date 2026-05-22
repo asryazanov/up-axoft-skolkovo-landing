@@ -11,13 +11,11 @@ import {
   Download,
   Factory,
   FileText,
-  Gauge,
   Handshake,
   Menu,
   MessageSquare,
   Microscope,
   Radar,
-  Route,
   ShieldCheck,
   Sparkles,
   Target,
@@ -32,51 +30,35 @@ import { siteContent } from "@/data/site";
 const assetBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const pitchDeckTemplateHref = `${assetBasePath}/documents/up-pitch-deck-template.pptx`;
 
-const evaluators = [
-  {
-    role: "Экспертная комиссия Axoft",
-    description: "Оценивает рыночный потенциал продукта и готовность к дистрибуции через партнёрский канал."
-  },
-  {
-    role: "Технологические эксперты «Сколково»",
-    description: "Оценивают зрелость продукта, инновационность решения и соответствие технологическим трендам."
-  },
-  {
-    role: "Отраслевые менторы",
-    description: "Практики с опытом внедрения и продаж в целевых отраслях — промышленность, финансы, ИТ."
-  }
-];
-
 const steps = [
-  ["Заявка", "Короткая форма фиксирует направление, статус резидентства и базовую информацию о компании."],
-  ["Формальный отбор", "Проверяем полноту заявки, соответствие направлениям программы и права на разработку."],
-  ["Экспертная оценка", "Смотрим зрелость продукта, B2B-потенциал и готовность к работе с партнёрским каналом."],
-  ["Сопровождение по треку", "Экспертиза продукта, упаковка решения, подготовка партнёрских и маркетинговых материалов."],
-  ["Demo Day", "Финалисты представляют решения индустриальным заказчикам и партнёрам Axoft в формате живых презентаций."]
+  ["Сбор заявок", "Компании подают заявку, указывают направление отбора, продукт и материалы для первичной оценки."],
+  ["Оценка заявок", "Команда программы проверяет соответствие базовым критериям и передаёт релевантные проекты экспертам."],
+  ["Работа с экспертами", "Участники получают разбор продукта, упаковки, партнёрской модели и готовности к B2B-продажам."],
+  ["Demo-day", "Финалисты представляют решения экспертам, партнёрам и команде Axoft."]
 ];
 
-const stepIcons = [ClipboardCheck, Target, Microscope, Route, Trophy];
+const stepIcons = [ClipboardCheck, Target, Microscope, Trophy];
 
 const programResults = [
   {
-    title: "Деньги",
-    text: "Маршрут к грантам, пилотам и коммерческим возможностям там, где продукт уже готов к рынку.",
+    title: "Гранты",
+    text: "Возможность для финалистов дорастить решения до уровня корпоративного внедрения или провести пилот.",
     Icon: WalletCards
   },
   {
+    title: "Контракты",
+    text: "Для победителей — дистрибьюторский контракт, по которому Axoft инвестирует 5 млн руб. в продвижение решения.",
+    Icon: FileText
+  },
+  {
     title: "Экспертиза",
-    text: "Разбор продукта, позиционирования, зрелости и готовности к корпоративным внедрениям.",
+    text: "Понимание специфики партнёрского канала, как в него попасть и сделать продукт понятным партнёрам.",
     Icon: Microscope
   },
   {
-    title: "Партнёры",
-    text: "Понимание, как продукт может попасть в канал продаж и стать понятным партнёрам Axoft.",
+    title: "Доступ к рынкам",
+    text: "Вне зависимости от результата акселератора компания может остаться в пуле Axoft и выйти на рынок, когда будет готова.",
     Icon: Handshake
-  },
-  {
-    title: "Скорость",
-    text: "Фокус на действиях после отбора: быстрее проверить гипотезы, упаковку и путь к заказчикам.",
-    Icon: Gauge
   }
 ];
 
@@ -100,7 +82,6 @@ export function LandingPage() {
   const [activeSection, setActiveSection] = useState("program");
   const [showSuccess, setShowSuccess] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
-  const [expandedDirections, setExpandedDirections] = useState<Record<string, boolean>>({});
   const [scrollProgress, setScrollProgress] = useState(0);
   const modalRef = useRef<HTMLDivElement>(null);
   const toastRef = useRef<HTMLDivElement>(null);
@@ -265,12 +246,12 @@ export function LandingPage() {
 
       <section className="first-screen" id="top">
         <div className="program-panel" id="program">
-          <p className="eyebrow">О программе</p>
+          <p className="eyebrow">Акселератор UP</p>
           <p className="hero-notice">Первый цикл — II квартал 2026 г.</p>
-          <h1>Подготовьте свою компанию к B2B продажам через партнёрский канал</h1>
+          <h1>Начните корпоративные продажи через канал Axoft</h1>
           <p>
-            Это программа для команд, которым важно не просто выступить на питче, а получить понятный путь к деньгам,
-            экспертизе, партнёрам и первым рыночным проверкам вместе с Axoft и экосистемой «Сколково».
+            Программа для команд, которые хотят получить новый канал продаж своих решений, доработать свои продукты
+            и сформировать план развития бизнеса при помощи экспертов Axoft и «Сколково».
           </p>
           <div className="result-grid">
             {programResults.map(({ title, text, Icon }) => (
@@ -344,39 +325,17 @@ export function LandingPage() {
         <div className="direction-grid expanded">
           {content.directions.map((direction, index) => {
             const DirectionIcon = directionIcons[index] ?? Sparkles;
-            const isExpanded = Boolean(expandedDirections[direction.name]);
             return (
             <article key={direction.name}>
               <span className="direction-icon" aria-hidden="true">
                 <DirectionIcon size={22} />
               </span>
               <h3>{direction.name}</h3>
-              <p>{direction.detail}</p>
               {direction.examples?.length ? (
                 <div className="example-tags">
-                  {direction.examples.map((example, exampleIndex) => (
-                    <span
-                      className={!isExpanded && exampleIndex > 3 ? "is-collapsed-mobile" : undefined}
-                      key={example}
-                    >
-                      {example}
-                    </span>
+                  {direction.examples.map((example) => (
+                    <span key={example}>{example}</span>
                   ))}
-                  {direction.examples.length > 4 ? (
-                    <button
-                      className="example-toggle"
-                      type="button"
-                      aria-expanded={isExpanded}
-                      onClick={() =>
-                        setExpandedDirections((current) => ({
-                          ...current,
-                          [direction.name]: !current[direction.name]
-                        }))
-                      }
-                    >
-                      {isExpanded ? "Скрыть" : `Показать ещё ${direction.examples.length - 4}`}
-                    </button>
-                  ) : null}
                 </div>
               ) : null}
             </article>
@@ -385,20 +344,11 @@ export function LandingPage() {
         </div>
 
         <div className="criteria-panel">
-          <div>
+          <div className="criteria-panel-main">
             <p className="eyebrow">Критерии отбора</p>
             <h3>Обязательные</h3>
             <ul>
               {criteria.required.map((item) => (
-                <li key={item}><CheckCircle2 size={18} />{item}</li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <p className="eyebrow">Желательные</p>
-            <h3>Повышают релевантность заявки</h3>
-            <ul>
-              {criteria.preferred.map((item) => (
                 <li key={item}><CheckCircle2 size={18} />{item}</li>
               ))}
             </ul>
@@ -409,8 +359,8 @@ export function LandingPage() {
 
       <section className="section process">
         <div className="section-heading">
-          <p className="eyebrow">Структура и сроки</p>
-          <h2>От заявки до Demo Day — пять этапов</h2>
+          <p className="eyebrow">График программы</p>
+          <h2>График проведения программы</h2>
           <p>Точный календарь будет опубликован позднее. Первый цикл программы запланирован на II квартал 2026 года.</p>
         </div>
         {steps.map(([title, text], index) => {
@@ -421,34 +371,14 @@ export function LandingPage() {
             <div>
               <span className="process-label">
                 <StepIcon size={16} />
-                Этап
+                Период
               </span>
               <h3>{title}</h3>
-              <span className="process-result">Результат</span>
               <p>{text}</p>
             </div>
           </article>
           );
         })}
-      </section>
-
-      <section className="section people">
-        <div className="section-heading">
-          <p className="eyebrow">Оценка заявок</p>
-          <h2>Кто смотрит проекты</h2>
-          <p>
-            Заявки проходят формальный отбор и экспертную оценку. Решения смотрят специалисты Axoft,
-            технологические эксперты «Сколково» и отраслевые менторы.
-          </p>
-        </div>
-        <div className="people-grid compact">
-          {evaluators.map((evaluator) => (
-            <article key={evaluator.role}>
-              <h3>{evaluator.role}</h3>
-              <p>{evaluator.description}</p>
-            </article>
-          ))}
-        </div>
       </section>
 
       <section className="section faq" id="faq">
@@ -540,7 +470,7 @@ export function LandingPage() {
                     Скачать шаблон презентации
                   </a>
                 </div>
-                <ApplyForm industries={content.industries} onSuccess={completeForm} />
+                <ApplyForm directions={content.directions.map((direction) => direction.name)} onSuccess={completeForm} />
               </>
             )}
           </div>

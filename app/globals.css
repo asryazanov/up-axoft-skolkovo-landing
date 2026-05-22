@@ -540,6 +540,14 @@ h1 span {
 
 .partner-cta {
   margin-top: 4px;
+  border-color: transparent;
+  background: var(--green);
+  color: var(--navy);
+}
+
+.partner-cta:hover {
+  background: var(--green-digital);
+  box-shadow: 0 12px 26px rgba(177, 236, 82, 0.28);
 }
 
 .partner-points {
@@ -657,7 +665,7 @@ h1 span {
 .direction-grid.expanded article {
   display: flex;
   flex-direction: column;
-  min-height: 292px;
+  min-height: 220px;
 }
 
 .direction-icon {
@@ -684,16 +692,16 @@ h1 span {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: auto;
-  padding-top: 18px;
+  margin-top: 14px;
+  padding-top: 0;
 }
 
 .example-tags span {
-  padding: 7px 10px;
+  padding: 8px 11px;
   border-radius: 999px;
   background: var(--soft);
   color: var(--navy);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
 }
 
@@ -711,7 +719,7 @@ h1 span {
 
 .criteria-panel {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 18px;
   padding: clamp(22px, 3vw, 34px);
 }
@@ -727,10 +735,6 @@ h1 span {
   border-color: rgba(0, 178, 124, 0.24);
   background: linear-gradient(90deg, rgba(0, 178, 124, 0.08), rgba(246, 246, 246, 0.72));
   box-shadow: inset 4px 0 0 var(--mint);
-}
-
-.criteria-panel > div:nth-child(2) {
-  background: rgba(246, 246, 246, 0.58);
 }
 
 .criteria-panel ul {
@@ -1411,6 +1415,21 @@ textarea {
   outline: none;
 }
 
+input[type="file"] {
+  padding: 8px 10px;
+}
+
+input[type="file"]::file-selector-button {
+  min-height: 34px;
+  margin-right: 12px;
+  border: 0;
+  border-radius: 8px;
+  padding: 7px 12px;
+  background: rgba(0, 178, 124, 0.1);
+  color: var(--navy);
+  font-weight: 800;
+}
+
 textarea {
   min-height: 130px;
   resize: vertical;
@@ -1491,6 +1510,10 @@ footer {
 
 footer .brand-pair img {
   max-height: 34px;
+}
+
+footer .brand-pair img:first-child {
+  filter: brightness(0) invert(1);
 }
 
 footer .footer-axoft-logo {
